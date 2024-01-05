@@ -5,6 +5,7 @@ import cookieparser from "cookie-parser";
 import compression from "compression";
 import cors from "cors";
 import mongoose from "mongoose";
+import { connectDB } from "./config/db";
 
 import router from "./router";
 
@@ -24,12 +25,18 @@ server.listen(8080, () => {
     console.log("Server is running on port 8080");
 });
 
-const MONGO_URL = "mongodb+srv://krumastefanov2019:X0cuZHN6hju3E2Pe@cluster0.tljopjw.mongodb.net/?retryWrites=true&w=majority";
+connectDB();
 
-mongoose.Promise = Promise;
-mongoose.connect(MONGO_URL);
-mongoose.connection.on("error", err => {
-    console.error(err);
-});
+// Set the 'views' directory
+app.set('views', __dirname + '\\views');
+
+// Serve static files directly from the 'views' directory
+app.use(express.static(__dirname + '\\views'));
+
+console.log(__dirname + '\\views');
+
+// Set the view engine to use HTML
+app.engine('html', require('ejs').renderFile);
+app.set('view engine', 'html');
 
 app.use('/', router());
