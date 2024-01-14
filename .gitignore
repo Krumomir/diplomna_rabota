@@ -1,6 +1,9 @@
 # Node.js
 node_modules/
 
+#Tailwind CSS
+src/styles/
+
 # TypeScript
 *.tsbuildinfo
 *.js
