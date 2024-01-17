@@ -25,7 +25,7 @@ server.listen(8081, () => {
     console.log("Server is running on port 8081");
 });
 
-connectDB();
+//connectDB();
 
 // Set the 'views' directory
 app.set('views', __dirname + '\\views');
