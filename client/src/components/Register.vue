@@ -1,17 +1,4 @@
 <template>
-  <!-- <div>
-    <h1>Register</h1>
-
-    <input type="text" name="username" v-model="username" placeholder="Username" />
-    <br />
-    <input type="text" name="email" v-model="email" placeholder="Email" />
-    <br />
-    <input type="password" name="password" v-model="password" placeholder="Password" />
-    <br />
-    on click call register method -->
-    <!-- <button @click="register">Register</button>
-  </div> -->
-
   <div class="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-800">
         <header class="p-4 bg-white dark:bg-gray-900">
             <a href="#">
@@ -112,8 +99,6 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 @import '../output.css'
-
 </style>
