@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 const UserSchema = new mongoose.Schema({
     username: {type: String, required: true},
     email: {type: String, required: true},
+    subscribed: {type: Boolean, required: true},
     authentication: {
         password: {type: String, required: true, select: false},
         salt: {type: String, select: false},
@@ -11,6 +12,16 @@ const UserSchema = new mongoose.Schema({
 });
 
 export const UserModel = mongoose.model("User", UserSchema);
+
+export const subscribeUser = async (email : String) => {
+    try {
+        const updatedUser = await UserModel.findOneAndUpdate({email}, {subscribed: true}, { new: true });
+        return updatedUser;
+    } catch (error) {
+        console.error(`Error subscribing user: ${error}`);
+        throw error;
+    }
+};
 
 export const getUsers = () => UserModel.find({});
 export const getUserByEmail = (email: String) => UserModel.findOne({email});

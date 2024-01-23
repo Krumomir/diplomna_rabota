@@ -1,5 +1,5 @@
 <template>
-   <div class="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-800">
+  <div class="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-800">
     <header class="p-4 bg-white dark:bg-gray-900"><a href="#"><svg xmlns="http://www.w3.org/2000/svg" width="24"
           height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
           stroke-linejoin="round" class="h-6 w-6 text-gray-800 dark:text-white">
@@ -34,8 +34,7 @@
           </div>
           <button id="signInButton"
             class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full border-2 border-gray-300 dark:border-gray-600 dark:text-white"
-            type="button"
-            @click="login">
+            type="button" @click="login">
             Sign in
           </button>
         </form>
@@ -68,8 +67,15 @@ export default {
     return {
       email: '',
       password: '',
-      error: null
+      user_id: '',
+      error: null,
+      stripe: null
     }
+  },
+  created () {
+    const stripeKey = process.env.VUE_APP_STRIPE_PUBLISHABLE_KEY || 'pk_test_51OazktFGqGGHwrYINdK1byvCH1BSFHmwjeudGEG1j4dITPruv70Ouwk94AR5ao8dbapmPp2hXLjrVcQh8hYWHBsl00tZT8yjSL'
+    // console.log(process.env.VUE_APP_STRIPE_PUBLISHABLE_KEY)
+    this.stripe = window.Stripe(stripeKey)
   },
   methods: {
     async login () {
@@ -81,6 +87,20 @@ export default {
         console.log(response)
       } catch (error) {
         this.error = error.response.data.error
+      }
+      this.stripeRedirect()
+    },
+    stripeRedirect () {
+      try {
+        this.stripe.redirectToCheckout({
+          mode: 'subscription',
+          lineItems: [{ price: 'price_1OazsCFGqGGHwrYIdO7OZ9iX', quantity: 1 }],
+          successUrl: 'http://localhost:8080/dashboard',
+          cancelUrl: 'http://localhost:8080/',
+          clientReferenceId: this.email
+        })
+      } catch (error) {
+        console.log(error)
       }
     }
   }

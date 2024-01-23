@@ -5,11 +5,13 @@ import { authentication, random } from '../helpers';
 
 export const login = async (req: express.Request, res: express.Response) => {
   try {
+      
     const { email, password } = req.body;
 
-    if (!email || !password) {
+    if (typeof req.body.email == undefined ||  typeof req.body.password == undefined) {
       return res.sendStatus(400);
     }
+
 
     const user = await getUserByEmail(email).select('+authentication.salt +authentication.password');
 
@@ -54,6 +56,7 @@ export const register = async (req: express.Request, res: express.Response) => {
     const user = await createUser({
       email,
       username,
+      subscribed: false,
       authentication: {
         salt,
         password: authentication(salt, password),
