@@ -74,6 +74,7 @@ export default {
   },
   created () {
     const stripeKey = process.env.VUE_APP_STRIPE_PUBLISHABLE_KEY || 'pk_test_51OazktFGqGGHwrYINdK1byvCH1BSFHmwjeudGEG1j4dITPruv70Ouwk94AR5ao8dbapmPp2hXLjrVcQh8hYWHBsl00tZT8yjSL'
+    // console.log(process.env.VUE_APP_STRIPE_PUBLISHABLE_KEY)
     this.stripe = window.Stripe(stripeKey)
   },
   methods: {

@@ -23,6 +23,8 @@ server.listen(port, () => {
 
 connectDB();
 
+console.log("TODO - stripe cancelation webhook https://stripe.com/docs/api/subscriptions/list");
+
 app.use(compression());
 app.use(cookieparser());
 

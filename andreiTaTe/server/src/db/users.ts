@@ -1,13 +1,9 @@
 import mongoose from "mongoose";
-import Stripe from 'stripe';
 
 const UserSchema = new mongoose.Schema({
     username: {type: String, required: true},
     email: {type: String, required: true},
-    subscription: {
-        subscribed: {type: Boolean, default: false},
-        sub_id: {type: String, select: false},
-    },
+    subscribed: {type: Boolean, required: true},
     authentication: {
         password: {type: String, required: true, select: false},
         salt: {type: String, select: false},
@@ -17,33 +13,12 @@ const UserSchema = new mongoose.Schema({
 
 export const UserModel = mongoose.model("User", UserSchema);
 
-export const subscribeUser = async (email: String, sub_id: String) => {
+export const subscribeUser = async (email : String) => {
     try {
-        const updatedUser = await UserModel.findOneAndUpdate(
-            { email },
-            { 'subscription.subscribed': true, 'subscription.sub_id': sub_id },
-            { new: true, select: '+subscription.sub_id' } 
-        );
-
+        const updatedUser = await UserModel.findOneAndUpdate({email}, {subscribed: true}, { new: true });
         return updatedUser;
     } catch (error) {
         console.error(`Error subscribing user: ${error}`);
-        throw error;
-    }
-};
-
-
-export const unsubscribeUser = async (sub_id : String) => {
-    try {
-        const updatedUser = await UserModel.findOneAndUpdate(
-            { 'subscription.sub_id': sub_id },
-            { 'subscription.subscribed': false, 'subscription.sub_id': null },
-            { new: true, select: '+subscription.sub_id' } 
-        );
-
-        return updatedUser;
-    } catch (error) {
-        console.error(`Error unsubscribing user: ${error}`);
         throw error;
     }
 };
