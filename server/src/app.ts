@@ -8,6 +8,9 @@ import router from "./router";
 import axios from 'axios';
 import { processResponse } from './helpers';
 import { createCoin } from "./db/coins";
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 
@@ -16,12 +19,12 @@ const server = http.createServer(app);
 const port = process.env.PORT || 8081;
 
 app.use(cors({
-    credentials: true,
+  credentials: true,
 }));
 
 
 server.listen(port, () => {
-    console.log("Server is running on port " + port);
+  console.log("Server is running on port " + port);
 });
 
 connectDB();
@@ -32,18 +35,12 @@ app.use(cookieparser());
 app.use('/', router());
 
 
-const coingeckoApiKey = 'CG-G3pobU3E8Q1w1wms5w9x8AVu';
-
-const defillamaBaseURL = 'https://api.llama.fi';
-
-const coingeckoBaseURL = 'https://api.coingecko.com/api/v3';
-
 //TVL: Retrieve current and historical TVL data for Aave
 app.get('/defillama-tvl/:protocol', async (req, res) => {
   try {
     const protocolName = req.params.protocol;
 
-    const response = await axios.get(`${defillamaBaseURL}/protocol/${protocolName}`);
+    const response = await axios.get(`${process.env.DEFLAMA_BASE_URL}/protocol/${protocolName}`);
 
     const totalTvl = response.data.tvl || [];
 
@@ -58,7 +55,7 @@ app.get('/defillama-current-tvl/:protocol', async (req, res) => {
   try {
     const protocolName = req.params.protocol;
 
-    const response = await axios.get(`${defillamaBaseURL}/tvl/${protocolName}`);
+    const response = await axios.get(`${process.env.DEFLAMA_BASE_URL}/tvl/${protocolName}`);
     res.json(response.data);
   } catch (error) {
     res.status(500).json({ error: 'Internal Server Error' });
@@ -82,7 +79,7 @@ app.get('/defillama-current-tvl/:protocol', async (req, res) => {
 app.get('/coin/:id', async (req: express.Request, res: express.Response) => {
   try {
     const coinId = req.params.id;
-    const { data } = await axios.get(`${coingeckoBaseURL}/coins/${coinId}`, {
+    const { data } = await axios.get(`${process.env.COINGECKO_BASE_URL}/coins/${coinId}`, {
       params: {
         localization: false,
         tickers: false,
@@ -93,10 +90,10 @@ app.get('/coin/:id', async (req: express.Request, res: express.Response) => {
       },
       headers: {
         'Content-Type': 'application/json',
-        'X-CoinGecko-API-Key': coingeckoApiKey, // Include your API key in the request headers
+        'X-CoinGecko-API-Key': process.env.COINGECKO_API_KEY, // Include your API key in the request headers
       },
     });
-    
+
     const processedResponse = processResponse(data);
 
     const coin = await createCoin(processedResponse);

@@ -37,7 +37,6 @@
             type="button" @click="login">
             Sign in
           </button>
-          <!-- center the stripe buy button -->
           <stripe-buy-button
             buy-button-id="buy_btn_1OhSnaFGqGGHwrYIe8gQovPm"
             publishable-key="pk_test_51OazktFGqGGHwrYINdK1byvCH1BSFHmwjeudGEG1j4dITPruv70Ouwk94AR5ao8dbapmPp2hXLjrVcQh8hYWHBsl00tZT8yjSL"

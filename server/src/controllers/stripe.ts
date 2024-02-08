@@ -5,8 +5,8 @@ import { subscribeUser, unsubscribeUser } from '../db/users';
 export const webhook = (req: express.Request, res: express.Response) => {
     const sig = req.headers["stripe-signature"];
 
-    const stripeSecretKey = 'sk_test_51OazktFGqGGHwrYICmWSgmo1mrPR1A4I9XobyilmYTwBJzQqAuCQHSZvGxWN0YOuVbbmdvavISpIfjymhc8dTyew004aGfujFK' || process.env.STRIPE_SECRET_KEY;
-    const webhookKey = 'whsec_33hVRsdJ6rxSh0UVXXpHcaZTyZYG2IrP' || process.env.STRIPE_WEBHOOK_SECRET;
+    const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+    const webhookKey = process.env.STRIPE_WEBHOOK_SECRET;
 
     let stripe = new Stripe(stripeSecretKey)
 

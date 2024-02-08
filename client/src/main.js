@@ -12,6 +12,8 @@ dotenv.config()
 
 Vue.config.productionTip = false
 
+Vue.config.ignoredElements = ['stripe-buy-button']
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
