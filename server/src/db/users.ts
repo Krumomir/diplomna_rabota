@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import Stripe from 'stripe';
 
 const UserSchema = new mongoose.Schema({
     username: {type: String, required: true},

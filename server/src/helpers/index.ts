@@ -52,6 +52,9 @@ export const processResponse = (response: any) => {
     delete response.links.announcement_url;
     delete response.categories;
     delete response.detail_platforms;
+    delete response.market_data.last_updated;
+    delete response.last_updated;
+    delete response.status_updates;
 
     // Update the fields within the market_data object with the extracted USD values
     response.market_data = {

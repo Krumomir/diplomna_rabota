@@ -37,6 +37,13 @@
             type="button" @click="login">
             Sign in
           </button>
+          <!-- center the stripe buy button -->
+          <stripe-buy-button
+            buy-button-id="buy_btn_1OhSnaFGqGGHwrYIe8gQovPm"
+            publishable-key="pk_test_51OazktFGqGGHwrYINdK1byvCH1BSFHmwjeudGEG1j4dITPruv70Ouwk94AR5ao8dbapmPp2hXLjrVcQh8hYWHBsl00tZT8yjSL"
+            >
+            Subscribe
+          </stripe-buy-button>
         </form>
         <p class="text-sm text-center text-gray-800 dark:text-gray-200">
           Don't have an account? <a class="underline text-gray-800 dark:text-gray-200"
@@ -68,13 +75,8 @@ export default {
       email: '',
       password: '',
       user_id: '',
-      error: null,
-      stripe: null
+      error: null
     }
-  },
-  created () {
-    const stripeKey = process.env.VUE_APP_STRIPE_PUBLISHABLE_KEY || 'pk_test_51OazktFGqGGHwrYINdK1byvCH1BSFHmwjeudGEG1j4dITPruv70Ouwk94AR5ao8dbapmPp2hXLjrVcQh8hYWHBsl00tZT8yjSL'
-    this.stripe = window.Stripe(stripeKey)
   },
   methods: {
     async login () {
@@ -86,20 +88,6 @@ export default {
         console.log(response)
       } catch (error) {
         this.error = error.response.data.error
-      }
-      this.stripeRedirect()
-    },
-    stripeRedirect () {
-      try {
-        this.stripe.redirectToCheckout({
-          mode: 'subscription',
-          lineItems: [{ price: 'price_1OazsCFGqGGHwrYIdO7OZ9iX', quantity: 1 }],
-          successUrl: 'http://localhost:8080/dashboard',
-          cancelUrl: 'http://localhost:8080/',
-          clientReferenceId: this.email
-        })
-      } catch (error) {
-        console.log(error)
       }
     }
   }

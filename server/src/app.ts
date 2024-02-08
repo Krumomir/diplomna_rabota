@@ -7,6 +7,7 @@ import { connectDB } from "./config/db";
 import router from "./router";
 import axios from 'axios';
 import { processResponse } from './helpers';
+import { createCoin } from "./db/coins";
 
 const app = express();
 
@@ -98,7 +99,9 @@ app.get('/coin/:id', async (req: express.Request, res: express.Response) => {
     
     const processedResponse = processResponse(data);
 
-    res.json(processedResponse);
+    const coin = await createCoin(processedResponse);
+
+    res.json(coin);
   } catch (error) {
     console.error('Error fetching coin data:', error);
     res.status(500).json({ error: 'Internal server error' });
