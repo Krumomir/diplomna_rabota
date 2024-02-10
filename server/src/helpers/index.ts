@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import { size } from 'lodash';
 
 const SECRET = 'mysecretkey';
 
@@ -65,4 +66,13 @@ export const processResponse = (response: any) => {
     // Return the modified response
     return response;
 };
+
+export const filterDataByChainAndProject = (data: any, chain: string, project: string) => {
+    if (!Array.isArray(data)) {
+        throw new TypeError('data must be an array');
+    }
+
+    return data.filter((item: { chain: string; project: string; }) => item.chain === chain && item.project === project);
+  }
+  
   

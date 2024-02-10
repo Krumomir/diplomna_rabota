@@ -49,5 +49,5 @@ export const PoolModel = mongoose.model('Pool', schema);
 export const getPools = () => PoolModel.find({});
 export const getPoolById = (id: String) => PoolModel.findById(id);
 export const createPool = (data: any) => PoolModel.create(data).then((pool: any) => pool);
-export const updatePoolById = (id: String, values: Record<string, any>) => PoolModel.findByIdAndUpdate(id, values);
+export const updatePoolById = (id: String, values: Record<string, any>) => PoolModel.findByIdAndUpdate(id, values).then((pool: any) => pool.toObject());
 export const deletePoolById = (id: String) => PoolModel.findByIdAndDelete(id);
