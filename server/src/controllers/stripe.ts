@@ -26,7 +26,7 @@ export const webhook = (req: express.Request, res: express.Response) => {
     switch (event.type) {
         case "checkout.session.completed":
             const checkoutSession = event.data.object;
-            const userEmail = checkoutSession.client_reference_id;
+            const userEmail = checkoutSession.customer_details.email;
             subscribeUser(userEmail, checkoutSession.subscription.toString());
             break;
         case "customer.subscription.deleted":

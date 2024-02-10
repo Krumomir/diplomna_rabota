@@ -9,6 +9,7 @@ import axios from 'axios';
 import { processResponse } from './helpers';
 import { createCoin } from "./db/coins";
 import dotenv from 'dotenv';
+import { createPool } from "./db/pool";
 
 dotenv.config();
 
@@ -29,10 +30,13 @@ server.listen(port, () => {
 
 connectDB();
 
+
 app.use(compression());
 app.use(cookieparser());
 
 app.use('/', router());
+
+
 
 
 //TVL: Retrieve current and historical TVL data for Aave
@@ -62,18 +66,28 @@ app.get('/defillama-current-tvl/:protocol', async (req, res) => {
   }
 });
 
-// app.get('/defillama-yields/:protocol', async (req, res) => {
-//   try {
-//     // Extract protocol name from request parameters
-//     const protocolName = req.params.protocol;
+app.get('/defillama-yields/:protocol', async (req, res) => {
+  try {
+    const protocolName = req.params.protocol;
 
-//     // Yields API Call for the specified protocol
-//     const response = await axios.get(`${defillamaBaseURL}/pools/${protocolName}`);
-//     res.json(response.data);
-//   } catch (error) {
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// });
+    const response = await axios.get(`${process.env.DEFILAMA_YIELDS_URL}/pools`);
+
+    // Filter the data based on chain and project fields
+    const filteredData = response.data.data.filter((item: { chain: string; project: string; }) => item.chain === 'Ethereum' && item.project === protocolName);
+
+    const savedData = [];
+    for (const item of filteredData) {
+      const savedItem = await createPool(item);
+      savedData.push(savedItem);
+    }
+
+    res.json(savedData);
+  } catch (error) {
+    console.error('Error fetching yields:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 
 // Endpoint to fetch coin data
 app.get('/coin/:id', async (req: express.Request, res: express.Response) => {
@@ -96,9 +110,9 @@ app.get('/coin/:id', async (req: express.Request, res: express.Response) => {
 
     const processedResponse = processResponse(data);
 
-    const coin = await createCoin(processedResponse);
+    //   const coin = await createCoin(processedResponse);
 
-    res.json(coin);
+    res.json(processedResponse);
   } catch (error) {
     console.error('Error fetching coin data:', error);
     res.status(500).json({ error: 'Internal server error' });
