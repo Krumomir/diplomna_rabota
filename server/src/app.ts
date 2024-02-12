@@ -30,7 +30,6 @@ server.listen(port, () => {
 
 connectDB();
 
-
 app.use(compression());
 app.use(cookieparser());
 
@@ -38,28 +37,25 @@ app.use('/', router());
 
 
 // Schedule the historicalTvl function to run every 5 minutes
-cron.schedule('*/5 * * * *', async () => {
-  const req = { params: { protocol: 'aave' } } as unknown as express.Request;
-  const res = { json: (data: any) => console.log(data) } as express.Response;
-  console.log("Running historicalTvl cron job for Aave protocol ")
-  console.log(await historicalTvl(req, res));
-});
+// cron.schedule('*/5 * * * *', async () => {
+//   const req = { params: { protocol: 'aave' } } as unknown as express.Request;
+//   const res = { json: (data: any) => console.log(data) } as express.Response;
+//   console.log(await historicalTvl(req, res));
+// });
 
-// Schedule the historicalYields function to run every 5 minutes
-cron.schedule('*/5 * * * *', async () => {
-  const req = { params: { protocol: 'aave-v2' } } as unknown as express.Request;
-  const res = { json: (data: any) => console.log(data) } as express.Response;
-  console.log("Running historicalYields cron job for Aave protocol ")
-  console.log(await historicalYields(req, res));
-});
+// // Schedule the historicalYields function to run every 5 minutes
+// cron.schedule('*/5 * * * *', async () => {
+//   const req = { params: { protocol: 'aave-v2' } } as unknown as express.Request;
+//   const res = { json: (data: any) => console.log(data) } as express.Response;
+//   console.log(await historicalYields(req, res));
+// });
 
-// Schedule the historicalYields function to run every 5 minutes
-cron.schedule('*/5 * * * *', async () => {
-  const req = { params: { id: 'aave' } } as unknown as express.Request;
-  const res = { json: (data: any) => console.log(data) } as express.Response;
-  console.log("Running coinData cron job for Aave protocol ")
-  console.log(await coinData(req, res));
-});
+// // Schedule the historicalYields function to run every 5 minutes
+// cron.schedule('*/5 * * * *', async () => {
+//   const req = { params: { id: 'aave' } } as unknown as express.Request;
+//   const res = { json: (data: any) => console.log(data) } as express.Response;
+//   console.log(await coinData(req, res));
+// });
 
 
 // app.get('/coingecko-exchanges', async (_, res) => {
