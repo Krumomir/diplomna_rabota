@@ -10,6 +10,7 @@ import cron from 'node-cron';
 import { connectDB } from "./config/db";
 import { historicalTvl, historicalYields } from "./controllers/defilama";
 import { coinData } from "./controllers/coingecko";
+import { getCoinById } from "./db/coins";
 
 dotenv.config();
 
@@ -35,27 +36,57 @@ app.use(cookieparser());
 
 app.use('/', router());
 
+const { OpenAI } = require('openai');
 
-// Schedule the historicalTvl function to run every 5 minutes
-// cron.schedule('*/5 * * * *', async () => {
-//   const req = { params: { protocol: 'aave' } } as unknown as express.Request;
-//   const res = { json: (data: any) => console.log(data) } as express.Response;
-//   console.log(await historicalTvl(req, res));
-// });
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
+});
+getCoinById('aave')
+  .then((document: any) => {
+  const dataString = `Coin information: ${JSON.stringify(document)}`;
+      // Include the data in the prompt
+  const prompt = `Analyze the following data and say is it worth to invest: ${dataString}`;
 
-// // Schedule the historicalYields function to run every 5 minutes
-// cron.schedule('*/5 * * * *', async () => {
-//   const req = { params: { protocol: 'aave-v2' } } as unknown as express.Request;
-//   const res = { json: (data: any) => console.log(data) } as express.Response;
-//   console.log(await historicalYields(req, res));
-// });
+  // Define the prompt message
+  const promptMessage = {
+    role: 'user',
+    content: prompt
+  };
 
-// // Schedule the historicalYields function to run every 5 minutes
-// cron.schedule('*/5 * * * *', async () => {
-//   const req = { params: { id: 'aave' } } as unknown as express.Request;
-//   const res = { json: (data: any) => console.log(data) } as express.Response;
-//   console.log(await coinData(req, res));
-// });
+  // Make the API request
+  // openai.chat.completions.create({
+  //   model: 'gpt-3.5-turbo-16k',
+  //   messages: [promptMessage],
+  //   temperature: 0.7
+  // })
+  // .then((response: any) => {
+  //   console.log(response.choices[0].message.content);
+  // })
+  // .catch((error: any) => {
+  //   console.error(error);
+  // });
+})
+
+//Schedule the historicalTvl function to run every hour
+cron.schedule('0 * * * *', async () => {
+  const req = { params: { protocol: 'aave' } } as unknown as express.Request;
+  const res = { json: (data: any) => console.log(data) } as express.Response;
+  console.log(await historicalTvl(req, res));
+});
+
+// Schedule the historicalYields function to run every hour
+cron.schedule('0 * * * *', async () => {
+  const req = { params: { protocol: 'aave-v2' } } as unknown as express.Request;
+  const res = { json: (data: any) => console.log(data) } as express.Response;
+  console.log(await historicalYields(req, res));
+});
+
+// Schedule the historicalYields function to run every hour
+cron.schedule('0 * * * *', async () => {
+  const req = { params: { id: 'aave' } } as unknown as express.Request;
+  const res = { json: (data: any) => console.log(data) } as express.Response;
+  console.log(await coinData(req, res));
+});
 
 
 // app.get('/coingecko-exchanges', async (_, res) => {
