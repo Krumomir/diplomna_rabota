@@ -21,6 +21,7 @@ const server = http.createServer(app);
 const port = process.env.PORT;
 
 app.use(cors({
+  origin: 'http://localhost:8080',
   credentials: true,
 }));
 
@@ -43,29 +44,29 @@ const openai = new OpenAI({
 });
 getCoinById('aave')
   .then((document: any) => {
-  const dataString = `Coin information: ${JSON.stringify(document)}`;
-      // Include the data in the prompt
-  const prompt = `Analyze the following data and say is it worth to invest: ${dataString}`;
+    const dataString = `Coin information: ${JSON.stringify(document)}`;
+    // Include the data in the prompt
+    const prompt = `Analyze the following data and say is it worth to invest: ${dataString}`;
 
-  // Define the prompt message
-  const promptMessage = {
-    role: 'user',
-    content: prompt
-  };
+    // Define the prompt message
+    const promptMessage = {
+      role: 'system',//?????????????
+      content: prompt
+    };
 
-  // Make the API request
-  // openai.chat.completions.create({
-  //   model: 'gpt-3.5-turbo-16k',
-  //   messages: [promptMessage],
-  //   temperature: 0.7
-  // })
-  // .then((response: any) => {
-  //   console.log(response.choices[0].message.content);
-  // })
-  // .catch((error: any) => {
-  //   console.error(error);
-  // });
-})
+    // Make the API request
+  //   openai.chat.completions.create({
+  //     model: 'gpt-3.5-turbo-16k',
+  //     messages: [promptMessage],
+  //     temperature: 0.7
+  //   })
+  //     .then((response: any) => {
+  //       console.log(response.choices[0].message.content);
+  //     })
+  //     .catch((error: any) => {
+  //       console.error(error);
+  //     });
+  })
 
 //Schedule the historicalTvl function to run every hour
 cron.schedule('0 * * * *', async () => {

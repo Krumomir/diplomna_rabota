@@ -2,8 +2,8 @@
     <div class="flex min-h-screen w-full">
         <div class="grid w-full max-w-screen-xl gap-4 min-h-screen px-4 mx-auto md:px-6">
             <div class="flex flex-col gap-4">
-                <header class="flex items-center h-16">
-                    <a class="flex items-center gap-2 text-lg font-semibold sm:text-base mr-4" href="#">
+                <header class="flex items-center justify-between h-16">
+                    <a class="flex items-center gap-2 text-lg font-semibold sm:text-base mr-4" href="http://localhost:8080/">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="24"
@@ -20,20 +20,17 @@
                         </svg>
                         <span class="sr-only">Acme Inc</span>
                     </a>
-                    <nav class="hidden font-medium sm:flex flex-row items-center gap-5 text-sm lg:gap-6">
-                        <a class="text-gray-500 dark:text-gray-400" href="#">
-                            All Projects
-                        </a>
-                        <a class="text-gray-500 dark:text-gray-400" href="#">
-                            Top Gainers
-                        </a>
-                        <a class="text-gray-500 dark:text-gray-400" href="#">
-                            Top Losers
-                        </a>
-                        <a class="text-gray-500 dark:text-gray-400" href="#">
-                            Favorites
-                        </a>
-                    </nav>
+                    <div class="flex gap-4">
+                        <button @click="signOut"
+                            class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
+                            Sign Out
+                        </button>
+                        <stripe-buy-button
+                            buy-button-id="buy_btn_1OhSnaFGqGGHwrYIe8gQovPm"
+                            publishable-key="pk_test_51OazktFGqGGHwrYINdK1byvCH1BSFHmwjeudGEG1j4dITPruv70Ouwk94AR5ao8dbapmPp2hXLjrVcQh8hYWHBsl00tZT8yjSL"
+                            >
+                        </stripe-buy-button>
+                    </div>
                 </header>
                 <main class="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-10">
                     <div class="grid gap-4">
@@ -41,8 +38,7 @@
                             v-for="coin in coins" :key="coin._id">
                             <div class="p-6 flex items-center gap-4">
                                 <div class="grid gap-1">
-                                    <h3 class="text-2xl font-semibold whitespace-nowrap leading-none tracking-tight">{{
-                                        coin.name }}</h3>
+                                    <h3 class="text-2xl font-semibold whitespace-nowrap leading-none tracking-tight">{{ coin.name }}</h3>
                                     <p class="text-sm text-muted-foreground">{{ coin.symbol }}</p>
                                 </div>
                                 <div class="ml-auto flex flex-col items-end">
@@ -59,6 +55,9 @@
 </template>
 
 <script>
+import AuthenticationService from '@/services/AuthenticationService.js'
+import CryptoService from '@/services/CryptoService.js'
+
 export default {
   data () {
     return {
@@ -66,9 +65,22 @@ export default {
     }
   },
   async created () {
-    const response = await fetch('http://localhost:8081/coingecko/coins')
-    const data = await response.json()
-    this.coins = data
+    try {
+      const response = await CryptoService.coinData()
+      this.coins = response.data
+    } catch (error) {
+      console.error('Failed to fetch coin data:', error)
+    }
+  },
+  methods: {
+    async signOut () {
+      try {
+        await AuthenticationService.logout()
+        this.$router.push('/auth/login')
+      } catch (error) {
+        console.error('Failed to sign out:', error)
+      }
+    }
   }
 }
 </script>

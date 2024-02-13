@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { getUserByEmail, createUser } from '../db/users';
+import { getUserByEmail, createUser, getUserBySessionToken } from '../db/users';
 import { authentication, random } from '../helpers';
 
 export const login = async (req: express.Request, res: express.Response) => {
@@ -29,7 +29,7 @@ export const login = async (req: express.Request, res: express.Response) => {
 
     await user.save();
 
-    res.cookie('sessionToken', user.authentication.sessionToken, { domain: 'localhost', path: '/' });
+    res.cookie('sessionToken', user.authentication.sessionToken, { domain: 'localhost', path: '/', sameSite: 'none', secure: true});
 
     return res.status(200).json(user).end();
   } catch (error) {
@@ -68,3 +68,17 @@ export const register = async (req: express.Request, res: express.Response) => {
     return res.sendStatus(400);
   }
 }
+
+export const logout = async (req: express.Request, res: express.Response) => {
+  const sessionToken = req.cookies.sessionToken;
+  const user = await getUserBySessionToken(sessionToken);
+
+  if (user) {
+    user.authentication.sessionToken = null;
+    await user.save();
+  }
+
+  res.clearCookie('sessionToken', { domain: 'localhost', path: '/', });
+
+  res.sendStatus(200);
+};

@@ -1,15 +1,23 @@
 <template>
   <div class="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-800">
         <header class="p-4 bg-white dark:bg-gray-900">
-            <a href="#">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="h-6 w-6 text-gray-800 dark:text-white">
-                    <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
-                    <line x1="4" x2="4" y1="22" y2="15"></line>
+            <a class="flex items-center gap-2 text-lg font-semibold sm:text-base mr-4" href="http://localhost:8080/">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="w-6 h-6 text-black dark:text-white"
+                >
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
                 </svg>
-                <span class="sr-only">Crypto Investments</span>
-            </a>
+                <span class="sr-only">Acme Inc</span>
+             </a>
         </header>
         <main class="flex-1 flex items-center justify-center p-4">
             <div class="w-full max-w-md space-y-6">
