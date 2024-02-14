@@ -1,11 +1,6 @@
 const mongoose = require('mongoose');
 
 const coinSchema = new mongoose.Schema({
-  _id: {
-    type: String,
-    required: true,
-    unique: true,
-  },
   symbol: {
     type: String,
     required: true,
@@ -101,11 +96,12 @@ const coinSchema = new mongoose.Schema({
     price_change_percentage_1h: Number,
   },
 
-}, { timestamps: true, _id: false});
+}, { timestamps: true});
 
 export const coinModel = mongoose.model('Coin', coinSchema);
 
 export const getCoinById = (id: String) => coinModel.findById(id);
+export const getCoinByName = (name: String) => coinModel.findOne({ name: name });
 export const getCoins = () => coinModel.find({});
 export const createCoin = (data: any) => coinModel.create(data).then((coin: any) => coin.toObject());
 export const deleteCoinById = (id: String) => coinModel.findByIdAndDelete(id);

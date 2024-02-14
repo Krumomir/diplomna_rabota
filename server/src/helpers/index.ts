@@ -56,6 +56,7 @@ export const processResponse = (response: any) => {
     delete response.market_data.last_updated;
     delete response.last_updated;
     delete response.status_updates;
+    delete response.id;
 
     // Update the fields within the market_data object with the extracted USD values
     response.market_data = {

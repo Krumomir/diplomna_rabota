@@ -9,23 +9,32 @@ const historicalValueSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-}, { _id: false }); 
+}, { _id: false });
 
 const protocolHistoricalValueSchema = new mongoose.Schema({
-  _id: {
+  name: {
     type: String,
     required: true,
-    unique: true,
   },
   historicalValues: [historicalValueSchema],
-}, { timestamps: true, _id: false});
+}, { timestamps: true });
 
 export const ProtocolHistoricalTVLModel = mongoose.model("ProtocolHistoricalTVL", protocolHistoricalValueSchema);
 
 export const getProtocols = () => ProtocolHistoricalTVLModel.find({});
 export const getProtocolById = (id: String) => ProtocolHistoricalTVLModel.findById(id);
-export const createProtocol = (data: any) => ProtocolHistoricalTVLModel.create(data).then((protocol: any) => protocol.toObject());
-export const updateProtocolById = (id: String, values: Record<string, any>) => 
+export const createProtocol = async (name: String, values: Record<string, any>) => {
+  try {
+    const protocol = await ProtocolHistoricalTVLModel.create({ name: name, historicalValues: values });
+    return protocol.toObject();
+  } catch (error) {
+    console.error('Failed to create protocol:', error);
+    return null;
+  }
+};
+
+export const updateProtocolById = (id: String, values: Record<string, any>) =>
   ProtocolHistoricalTVLModel.findByIdAndUpdate(id, { $set: { historicalValues: values } }, { new: true })
     .then((protocol: any) => protocol.toObject());
+export const getProtocolByName = (name: String) => ProtocolHistoricalTVLModel.findOne ({ name: name });
 export const deleteProtocolById = (id: String) => ProtocolHistoricalTVLModel.findByIdAndDelete(id);

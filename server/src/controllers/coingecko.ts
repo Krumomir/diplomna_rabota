@@ -2,7 +2,7 @@ import express from 'express';
 import axios from 'axios';
 
 import { processResponse } from '../helpers';
-import { updateCoinById, getCoins } from '../db/coins';
+import { createCoin, getCoins } from '../db/coins';
 
 export const coinData = async (req: express.Request, res: express.Response) => {
   try {
@@ -23,13 +23,14 @@ export const coinData = async (req: express.Request, res: express.Response) => {
       });
 
       const processedResponse = processResponse(data);
+      
+      console.log('Processed Response:', processedResponse);
 
-      const coin = await updateCoinById(data.id, processedResponse);
+    //  const coin = await createCoin(processedResponse);
 
-      res.json(coin);
+      res.json(processedResponse);
     } catch (error) {
       console.error('Error fetching coin data:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
     }
 };
 

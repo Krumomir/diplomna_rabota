@@ -10,7 +10,7 @@ import cron from 'node-cron';
 import { connectDB } from "./config/db";
 import { historicalTvl, historicalYields } from "./controllers/defilama";
 import { coinData } from "./controllers/coingecko";
-import { getCoinById } from "./db/coins";
+import { getCoinByName } from "./db/coins";
 
 dotenv.config();
 
@@ -42,7 +42,7 @@ const { OpenAI } = require('openai');
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
-getCoinById('aave')
+getCoinByName('aave')
   .then((document: any) => {
     const dataString = `Coin information: ${JSON.stringify(document)}`;
     // Include the data in the prompt
@@ -55,39 +55,52 @@ getCoinById('aave')
     };
 
     // Make the API request
-  //   openai.chat.completions.create({
-  //     model: 'gpt-3.5-turbo-16k',
-  //     messages: [promptMessage],
-  //     temperature: 0.7
-  //   })
-  //     .then((response: any) => {
-  //       console.log(response.choices[0].message.content);
-  //     })
-  //     .catch((error: any) => {
-  //       console.error(error);
-  //     });
+    // openai.chat.completions.create({
+    //   model: 'gpt-3.5-turbo-16k',
+    //   messages: [promptMessage],
+    //   temperature: 0.7
+    // })
+    //   .then((response: any) => {
+    //     console.log(response.choices[0].message.content);
+    //   })
+    //   .catch((error: any) => {
+    //     console.error(error);
+    //   });
   })
 
-//Schedule the historicalTvl function to run every hour
-cron.schedule('0 * * * *', async () => {
-  const req = { params: { protocol: 'aave' } } as unknown as express.Request;
-  const res = { json: (data: any) => console.log(data) } as express.Response;
-  console.log(await historicalTvl(req, res));
-});
+  const protocols = ['Lido', 'aave']; 
 
-// Schedule the historicalYields function to run every hour
-cron.schedule('0 * * * *', async () => {
-  const req = { params: { protocol: 'aave-v2' } } as unknown as express.Request;
-  const res = { json: (data: any) => console.log(data) } as express.Response;
-  console.log(await historicalYields(req, res));
-});
+  protocols.forEach(async (protocol) => {
+    cron.schedule('*/1 * * * *', async () => {
+      // Schedule the historicalTvl function to run every hour
+      const req = { params: { protocol } } as unknown as express.Request;
+      const res = { json: (data: any) => console.log(data) } as express.Response;
 
-// Schedule the historicalYields function to run every hour
-cron.schedule('0 * * * *', async () => {
-  const req = { params: { id: 'aave' } } as unknown as express.Request;
-  const res = { json: (data: any) => console.log(data) } as express.Response;
-  console.log(await coinData(req, res));
-});
+      console.log(await historicalTvl(req, res));
+   });
+  });
+
+  const protocols1 = ['aave-v2', 'lido']; 
+  
+  protocols1.forEach(protocol => {
+    // Schedule the historicalYields function to run every hour
+    cron.schedule('*/1 * * * *', async () => {
+      const req = { params: { protocol } } as unknown as express.Request;
+      const res = { json: (data: any) => console.log(data) } as express.Response;
+      console.log(await historicalYields(req, res));
+    });
+  });
+
+  const coinIds = ['lido-dao', 'aave']; // Add more coin IDs as needed
+  
+  coinIds.forEach(async id => {
+    // Schedule the coinData function to run every hour
+    cron.schedule('*/2 * * * *', async () => {
+      const req = { params: { id } } as unknown as express.Request;
+      const res = { json: (data: any) => console.log(data) } as express.Response;
+      console.log(await coinData(req, res));
+    });
+  });
 
 
 // app.get('/coingecko-exchanges', async (_, res) => {
