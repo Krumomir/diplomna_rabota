@@ -71,7 +71,7 @@ getCoinByName('aave')
   const protocols = ['Lido', 'aave']; 
 
   protocols.forEach(async (protocol) => {
-    cron.schedule('*/1 * * * *', async () => {
+    cron.schedule('0 * * * *', async () => {
       // Schedule the historicalTvl function to run every hour
       const req = { params: { protocol } } as unknown as express.Request;
       const res = { json: (data: any) => console.log(data) } as express.Response;
@@ -80,27 +80,27 @@ getCoinByName('aave')
    });
   });
 
-  const protocols1 = ['aave-v2', 'lido']; 
-  
-  protocols1.forEach(protocol => {
-    // Schedule the historicalYields function to run every hour
-    cron.schedule('*/1 * * * *', async () => {
-      const req = { params: { protocol } } as unknown as express.Request;
-      const res = { json: (data: any) => console.log(data) } as express.Response;
-      console.log(await historicalYields(req, res));
-    });
-  });
+const protocols1 = ['aave-v2', 'lido']; 
 
-  const coinIds = ['lido-dao', 'aave']; // Add more coin IDs as needed
-  
-  coinIds.forEach(async id => {
-    // Schedule the coinData function to run every hour
-    cron.schedule('*/2 * * * *', async () => {
-      const req = { params: { id } } as unknown as express.Request;
-      const res = { json: (data: any) => console.log(data) } as express.Response;
-      console.log(await coinData(req, res));
-    });
+protocols1.forEach(protocol => {
+  // Schedule the historicalYields function to run every hour
+  cron.schedule('0 * * * *', async () => {
+    const req = { params: { protocol } } as unknown as express.Request;
+    const res = { json: (data: any) => console.log(data) } as express.Response;
+    console.log(await historicalYields(req, res));
   });
+});
+
+const coinIds = ['lido-dao', 'aave']; // Add more coin IDs as needed
+
+coinIds.forEach(async id => {
+ // Schedule the coinData function to run every hour
+ cron.schedule('0 * * * *', async () => {
+    const req = { params: { id } } as unknown as express.Request;
+    const res = { json: (data: any) => console.log(data) } as express.Response;
+    console.log(await coinData(req, res));
+  });
+});
 
 
 // app.get('/coingecko-exchanges', async (_, res) => {

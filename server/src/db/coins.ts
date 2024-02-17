@@ -11,19 +11,7 @@ const coinSchema = new mongoose.Schema({
   },
   web_slug: String,
   asset_platform_id: String,
-  platforms: {
-    ethereum: String,
-    "near-protocol": String,
-    avalanche: String,
-    sora: String,
-    "optimistic-ethereum": String,
-    "huobi-token": String,
-    "polygon-pos": String,
-    fantom: String,
-    "harmony-shard-0": String,
-    "binance-smart-chain": String,
-    energi: String,
-  },
+  platforms: [String],
   description: {
     en: String,
   },
@@ -96,13 +84,15 @@ const coinSchema = new mongoose.Schema({
     price_change_percentage_1h: Number,
   },
 
-}, { timestamps: true});
+}, { timestamps: true });
 
 export const coinModel = mongoose.model('Coin', coinSchema);
 
 export const getCoinById = (id: String) => coinModel.findById(id);
-export const getCoinByName = (name: String) => coinModel.findOne({ name: name });
+export const getCoinByName = (name: String) => 
+  coinModel.findOne({ name }).then((coin: any) => coin ? coin.toObject() : null);
+export const getSimplifiedCoins = () => coinModel.find({}, { name: 1, symbol: 1, "market_data.current_price": 1 });
 export const getCoins = () => coinModel.find({});
-export const createCoin = (data: any) => coinModel.create(data).then((coin: any) => coin.toObject());
+export const createCoin = (data: any): Promise<any> => coinModel.create(data).then((coin: any) => coin.toObject());
 export const deleteCoinById = (id: String) => coinModel.findByIdAndDelete(id);
 export const updateCoinById = (id: String, values: Record<string, any>) => coinModel.findByIdAndUpdate(id, values).then((coin: any) => coin.toObject());

@@ -4,6 +4,7 @@ import Register from '@/components/Register'
 import LandingPage from '@/components/LandingPage'
 import Login from '@/components/Login'
 import Dashboard from '@/components/Dashboard'
+import Coin from '@/components/Coin'
 
 Vue.use(Router)
 
@@ -29,6 +30,11 @@ export default new Router({
       path: '/dashboard',
       name: 'dashboard',
       component: Dashboard
+    },
+    {
+      path: '/coin/:name',
+      name: 'coin',
+      component: Coin
     }
   ]
 })

@@ -46,6 +46,8 @@ export const processResponse = (response: any) => {
         market_cap_change_percentage_24h_in_currency: response.market_data.market_cap_change_percentage_24h_in_currency.usd
     };
 
+    response.platforms = Object.keys(response.platforms);
+
     delete response.image;
     delete response.links.blockchain_site;
     delete response.links.official_forum_url;
