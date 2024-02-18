@@ -1,8 +1,7 @@
 # Node.js
 server/node_modules/
 
-#Tailwind CSS
-server/src/styles/
+server/src/.env
 
 # TypeScript
 server/*.tsbuildinfo

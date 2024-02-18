@@ -2,11 +2,12 @@ import express from 'express';
 import axios from 'axios';
 
 import { updateProtocolById } from "../db/protocolHistoricalTVL";
-import { updatePoolById } from "../db/pool";
+import { updatePoolById, getPoolByPool } from "../db/pool";
 import { createProtocol } from '../db/protocolHistoricalTVL';
 import { createPool } from '../db/pool';
 
 import { filterDataByChainAndProject } from "../helpers";
+import { get } from 'lodash';
 
 export const historicalTvl = async (req: express.Request, res: express.Response) => {
   try {
@@ -22,7 +23,7 @@ export const historicalTvl = async (req: express.Request, res: express.Response)
       totalLiquidityUSD: item.totalLiquidityUSD,
     }));
 
-  //  const pool = await createProtocol(protocolName, totalTvl);
+    //  const pool = await createProtocol(protocolName, totalTvl);
 
     res.json(totalTvl);
   } catch (error) {
@@ -38,9 +39,11 @@ export const historicalYields = async (req: express.Request, res: express.Respon
 
     const filteredData = filterDataByChainAndProject(response.data.data, "Ethereum", protocolName);
 
+
     const savedData = [];
     for (const item of filteredData) {
-      //   const savedItem = await updatePool(item);
+      //  const pool = await getPoolByPool(item.pool);
+      //  const savedItem = await updatePoolById(pool._id, item);
      // const savedItem = await createPool(item);
       savedData.push(item);
     }

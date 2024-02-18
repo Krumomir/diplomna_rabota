@@ -55,17 +55,17 @@ getCoinByName('aave')
     };
 
     // Make the API request
-    // openai.chat.completions.create({
-    //   model: 'gpt-3.5-turbo-16k',
-    //   messages: [promptMessage],
-    //   temperature: 0.7
-    // })
-    //   .then((response: any) => {
-    //     console.log(response.choices[0].message.content);
-    //   })
-    //   .catch((error: any) => {
-    //     console.error(error);
-    //   });
+    openai.chat.completions.create({
+      model: 'gpt-3.5-turbo-16k',
+      messages: [promptMessage],
+      temperature: 0.7
+    })
+      .then((response: any) => {
+        console.log(response.choices[0].message.content);
+      })
+      .catch((error: any) => {
+        console.error(error);
+      });
   })
 
   const protocols = ['Lido', 'aave']; 
@@ -81,6 +81,7 @@ getCoinByName('aave')
   });
 
 const protocols1 = ['aave-v2', 'lido']; 
+
 
 protocols1.forEach(protocol => {
   // Schedule the historicalYields function to run every hour
