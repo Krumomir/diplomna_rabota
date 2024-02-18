@@ -1,7 +1,7 @@
 # Node.js
 server/node_modules/
 
-server/src/.env
+server/.env
 
 # TypeScript
 server/*.tsbuildinfo
