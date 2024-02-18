@@ -23,14 +23,20 @@ export const historicalTvl = async (req: express.Request, res: express.Response)
       totalLiquidityUSD: item.totalLiquidityUSD,
     }));
 
-    //  const pool = await createProtocol(protocolName, totalTvl);
+     // Filter to get the last 30 days
+     const thirtyDaysAgo = new Date();
+     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+     totalTvl = totalTvl.filter((item: any) => item.date >= thirtyDaysAgo);
+ 
+
+   //   const pool = await createProtocol(protocolName, totalTvl);
 
     res.json(totalTvl);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
-//uniqe id ?
+
 export const historicalYields = async (req: express.Request, res: express.Response) => {
   try {
     const protocolName = req.params.protocol;

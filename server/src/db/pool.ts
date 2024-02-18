@@ -47,6 +47,7 @@ const schema = new mongoose.Schema({
 export const PoolModel = mongoose.model('Pool', schema);
 
 export const getPools = () => PoolModel.find({});
+export const getPoolsByProject = (project: String) => PoolModel.find({ project }).then((pools: any) => pools.map((pool: any) => pool.toObject()));
 export const getPoolById = (id: String) => PoolModel.findById(id);
 export const getPoolByPool = (pool: String) => PoolModel.findOne({ pool }).then((pool: any) => pool ? pool.toObject() : null);
 export const createPool = (data: any) => PoolModel.create(data).then((pool: any) => pool);

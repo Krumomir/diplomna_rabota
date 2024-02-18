@@ -1,6 +1,8 @@
 import express from 'express';
 import Stripe from 'stripe';
+
 import { subscribeUser, unsubscribeUser } from '../db/users';
+import { getUserBySessionToken } from '../db/users';
 
 export const webhook = (req: express.Request, res: express.Response) => {
     const sig = req.headers["stripe-signature"];
@@ -43,4 +45,19 @@ export const webhook = (req: express.Request, res: express.Response) => {
     }
 
     res.json({ received: true });
+}
+
+export const cancelSubscription = async (req: express.Request, res: express.Response) => {
+    try {
+        const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+        const sessionToken = req.cookies.sessionToken;
+        const user = await getUserBySessionToken(sessionToken).select("+subscription.sub_id");
+
+        const subscription = await stripe.subscriptions.cancel(user.subscription.sub_id);
+
+        res.json(subscription);
+    } catch (error) {
+        console.error('Error canceling subscription:', error);
+        res.status(500).json({ error: error.message });
+    }
 }
