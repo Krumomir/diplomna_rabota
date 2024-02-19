@@ -74,7 +74,6 @@ export default {
 
       const user = await AuthenticationService.getUser()
       this.username = user.username
-      console.log('User:', user)
     } catch (error) {
       console.error('Failed to fetch coin data:', error)
     }

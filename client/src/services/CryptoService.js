@@ -2,9 +2,21 @@ import Api from './Api'
 
 export default {
   coinData () {
-    return Api().get('/coingecko/coins')
+    try {
+      const response = Api().get('/coingecko/coins')
+      return response
+    } catch (error) {
+      console.error('Failed to get coin data:', error)
+      throw error
+    }
   },
   detailedCoinData (name) {
-    return Api().get(`/coingecko/coin-data/${name}`)
+    try {
+      const response = Api().get(`/coingecko/coins/${name}`)
+      return response
+    } catch (error) {
+      console.error('Failed to get detailed coin data:', error)
+      throw error
+    }
   }
 }

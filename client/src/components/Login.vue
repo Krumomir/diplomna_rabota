@@ -32,19 +32,13 @@
               class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-800 dark:text-gray-200"
               for="password">Password</label><input
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              id="password" required="" type="password" v-model="password" placeholder="Password"></div>
-          <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-2"><button type="button" role="checkbox" aria-checked="false"
-                data-state="unchecked" value="on"
-                class="peer h-4 w-4 shrink-0 rounded-sm border border-primary ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
-                id="remember"></button><input aria-hidden="true" tabindex="-1" type="checkbox" value="on"
-                style="transform: translateX(-100%); position: absolute; pointer-events: none; opacity: 0; margin: 0px; width: 16px; height: 16px;"><label
-                class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-800 dark:text-gray-200"
-                for="remember">Remember me</label></div><a class="text-sm underline text-gray-800 dark:text-gray-200"
-              href="#">
-              Forgot password?
-            </a>
-          </div>
+              id="password" required="" type="password" v-model="password" placeholder="Password">
+            </div>
+            <div class="flex items-center justify-center">
+                <div class="flex items-center space-x-2">
+                    <p v-if="error" class="text-red-500 font-bold">{{ error }}</p>
+                </div>
+            </div>
           <button id="signInButton"
             class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full border-2 border-gray-300 dark:border-gray-600 dark:text-white"
             type="button" @click="login">
@@ -91,11 +85,15 @@ export default {
           email: this.email,
           password: this.password
         })
-        if (response.status === 200) {
+        if (response.data && response.data.status === 200) {
           this.$router.push(`/dashboard`)
         }
       } catch (error) {
-        this.error = error.response.data.error
+        if (error.response) {
+          this.error = error.response.data.message
+        } else {
+          this.error = 'An error occurred while trying to login.'
+        }
       }
     }
   }

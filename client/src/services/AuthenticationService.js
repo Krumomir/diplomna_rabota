@@ -4,7 +4,7 @@ export default {
   register (credentials) {
     try {
       const response = Api().post('auth/register', credentials)
-      return response.data
+      return response
     } catch (error) {
       console.error('Failed to register:', error)
       throw error
@@ -14,7 +14,7 @@ export default {
     try {
       const response = Api().post('auth/login', credentials
       )
-      return response.data
+      return response
     } catch (error) {
       console.error('Failed to login:', error)
       throw error
@@ -23,7 +23,7 @@ export default {
   logout (credentials) {
     try {
       const response = Api().post('auth/logout', credentials)
-      return response.data
+      return response
     } catch (error) {
       console.error('Failed to logout:', error)
       throw error
@@ -35,7 +35,7 @@ export default {
         withCredentials: true
       })
 
-      return response.data
+      return response
     } catch (error) {
       console.error('Failed to get user:', error)
       throw error
