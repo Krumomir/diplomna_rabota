@@ -22,7 +22,7 @@
         <main class="flex-1 flex items-center justify-center p-4">
             <div class="w-full max-w-md space-y-6">
                 <h1 class="text-3xl font-bold text-center text-gray-800 dark:text-white">Create an account</h1>
-                <form id="RegisterForm" class="space-y-4">
+                <form id="RegisterForm" class="space-y-4" @submit.prevent="register">
                     <div class="space-y-1">
                         <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-800 dark:text-gray-200"
                             for="username">Username</label>
@@ -55,8 +55,7 @@
                     </div>
                     <button
                         class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full border-2 border-gray-300 dark:border-gray-600 dark:text-white"
-                        type="submit"
-                        @click="register">
+                        type="submit">
                         Sign up
                     </button>
                 </form>
@@ -99,6 +98,9 @@ export default {
           password: this.password
         })
         console.log(response)
+        if (response.status === 200) {
+          this.$router.push('/dashboard')
+        }
       } catch (error) {
         this.error = error.response.data.error
       }

@@ -19,6 +19,7 @@
                     <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
                 </svg>
                 <span class="sr-only">Acme Inc</span>
+                <span class="ml-2">{{ username }}</span>
             </a>
             <div class="flex gap-4">
                 <button @click="signOut"
@@ -62,13 +63,18 @@ export default {
   data () {
     return {
       coins: [],
-      selectedCoin: null
+      selectedCoin: null,
+      username: ''
     }
   },
   async created () {
     try {
       const response = await CryptoService.coinData()
       this.coins = response.data
+
+      const user = await AuthenticationService.getUser()
+      this.username = user.username
+      console.log('User:', user)
     } catch (error) {
       console.error('Failed to fetch coin data:', error)
     }

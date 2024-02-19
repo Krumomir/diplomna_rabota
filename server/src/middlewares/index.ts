@@ -35,6 +35,9 @@ export const isOwner = async (req: express.Request, res: express.Response,  next
           return res.sendStatus(400);
         }
     
+        console.log('currentUserId', currentUserId);
+        console.log('id', id);
+
         if (currentUserId.toString() !== id) {
           return res.sendStatus(403);
         }

@@ -1,6 +1,25 @@
 import express from "express";
+import mongoose from "mongoose";
 
-import { getUsers, deleteUserById, getUserById } from "../db/users";
+import { getUsers, deleteUserById, getUserById, getUserBySessionToken } from "../db/users";
+
+import { Request } from 'express';
+
+interface RequestWithIdentity extends Request {
+  identity: mongoose.Model<{
+    username: string;
+    email: string;
+    subscription?: {
+        subscribed: boolean;
+        sub_id?: string;
+    };
+    authentication?: {
+        password: string;
+        salt?: string;
+        sessionToken?: string;
+    };
+}>; 
+}
 
 export const getAllUsers = async (req: express.Request, res: express.Response) => {
     try {
@@ -40,6 +59,15 @@ export const updateUser = async (req: express.Request, res: express.Response) =>
         await user.save();
 
         return res.status(200).json(user).end();
+    } catch (error) {
+        console.error(error);
+        return res.sendStatus(400);
+    }
+}
+
+export const getUser = async (req: RequestWithIdentity, res: express.Response) => {
+    try {
+        return res.json(req.identity);
     } catch (error) {
         console.error(error);
         return res.sendStatus(400);
