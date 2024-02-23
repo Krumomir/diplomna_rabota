@@ -9,7 +9,7 @@ export const login = async (req: express.Request, res: express.Response) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res.status(400). json({ message: 'Invalid email or password' });
+      return res.status(400). json({ message: 'Empty email or password' });
     }
 
     const user = await getUserByEmail(email).select('+authentication.salt +authentication.password');
@@ -32,8 +32,7 @@ export const login = async (req: express.Request, res: express.Response) => {
 
     return res.status(200).json(user).end();
   } catch (error) {
-    console.log(error);
-    return res.sendStatus(400);
+    return res.status(400).json({ message: error });
   }
 };
 
@@ -42,13 +41,27 @@ export const register = async (req: express.Request, res: express.Response) => {
     const { email, password, username } = req.body;
 
     if (!email || !password || !username) {
-      return res.status(400).json({ message: 'Invalid email, username or password' });
+      return res.status(400).json({ message: 'Empty email, username or password' });
     }
 
     const existingUser = await getUserByEmail(email);
   
     if (existingUser) {
       return res.status(400).json({ message: 'User already exists' });
+    }
+
+    // Regular expression for email validation
+    const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
+    
+    // Regular expression for password validation
+    const passwordRegex = /^(?=.*[A-Z]).{8,}$/;
+
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: 'Invalid email' });
+    }
+
+    if (!passwordRegex.test(password)) {
+      return res.status(400).json({ message: 'Invalid password: The password requires at least 8 characters and at least one uppercase letter' });
     }
 
     const salt = random();
@@ -68,21 +81,24 @@ export const register = async (req: express.Request, res: express.Response) => {
 
     return res.status(200).json(user).end();
   } catch (error) {
-    console.log(error);
-    return res.sendStatus(400);
+    return res.status(400).json({ message: error });
   }
 }
 
 export const logout = async (req: express.Request, res: express.Response) => {
-  const sessionToken = req.cookies.sessionToken;
-  const user = await getUserBySessionToken(sessionToken);
+  try {
+    const sessionToken = req.cookies.sessionToken;
+    const user = await getUserBySessionToken(sessionToken);
 
-  if (user) {
-    user.authentication.sessionToken = null;
-    await user.save();
+    if (user) {
+      user.authentication.sessionToken = null;
+      await user.save();
+    }
+
+    res.clearCookie('sessionToken', { domain: 'localhost', path: '/'});
+
+    res.sendStatus(200);
+  } catch (error) {
+    return res.status(400).json({ message: error });
   }
-
-  res.clearCookie('sessionToken', { domain: 'localhost', path: '/', });
-
-  res.sendStatus(200);
 };

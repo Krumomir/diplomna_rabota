@@ -40,14 +40,15 @@ app.use('/', router());
 analyzeCoin('Lido DAO', new OpenAI(
   {
     apiKey: process.env.OPENAI_API_KEY,
-  
+
   }));
 
-const protocols = ['Lido', 'aave'];
+const protocols = ['Lido', 'aave', 'Compound-v2'];
 protocols.forEach(protocol => scheduleTask(protocol, historicalTvl));
 
-const protocols1 = ['aave-v2', 'lido'];
+const protocols1 = ['aave-v2', 'lido', 'compound-v2'];
 protocols1.forEach(protocol => scheduleTask(protocol, historicalYields));
 
-const coinIds = ['lido-dao', 'aave'];
+const coinIds = ['lido-dao', 'aave', 'compound-0x'];
 coinIds.forEach(id => scheduleTask(id, coinData));
+

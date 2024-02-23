@@ -2,12 +2,13 @@ import express from 'express';
 import axios from 'axios';
 
 import { processResponse } from '../helpers';
-import { createCoin, getSimplifiedCoins } from '../db/coins';
+import { createCoin, getSimplifiedCoins, updateCoinById } from '../db/coins';
 import { getCoinByName } from "../db/coins";
+
 
 export const coinData = async (req: express.Request, res: express.Response) => {
   try {
-    const coinId = req.params.id;
+    const coinId = req.params.protocol;
     const { data } = await axios.get(`${process.env.COINGECKO_BASE_URL}/coins/${coinId}`, {
       params: {
         localization: false,
@@ -16,22 +17,19 @@ export const coinData = async (req: express.Request, res: express.Response) => {
         community_data: false,
         developer_data: false,
         sparkline: false,
-      },
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CoinGecko-API-Key': process.env.COINGECKO_API_KEY,
-      },
+      }
     });
 
     const processedResponse = processResponse(data);
 
-    console.log('Processed Response:', processedResponse);
+    const coin = await getCoinByName(processedResponse.name);
+    const updatedCoin = await updateCoinById(coin._id, processedResponse);
 
-   //  const coin = await createCoin(processedResponse);
+  //  const updatedCoin = await createCoin(processedResponse);
 
-    res.json(processedResponse);
+    res.json(updatedCoin);
   } catch (error) {
-    console.error('Error fetching coin data:', error);
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -41,7 +39,7 @@ export const getCoinInfoByName = async (req: express.Request, res: express.Respo
     const response = await getCoinByName(coinName);
     res.json(response);
   } catch (error) {
-    console.error('Error fetching coin by name:', error);
+    res.status(500).json({ error: error.message });
   }
 }
 

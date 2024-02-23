@@ -22,22 +22,10 @@ export default {
   },
   logout (credentials) {
     try {
-      const response = Api().post('auth/logout', credentials)
+      const response = Api().post('/logout', credentials)
       return response
     } catch (error) {
       console.error('Failed to logout:', error)
-      throw error
-    }
-  },
-  async getUser () {
-    try {
-      const response = await Api().get('/user', {
-        withCredentials: true
-      })
-
-      return response
-    } catch (error) {
-      console.error('Failed to get user:', error)
       throw error
     }
   }

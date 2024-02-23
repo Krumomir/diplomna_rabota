@@ -1,7 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 
-import { coinData, getAllCoins } from "../controllers/coingecko";
+import { getAllCoins } from "../controllers/coingecko";
 import { isAuthenticated } from "../middlewares";
 import { getCoinInfoByName } from "../controllers/coingecko";
 

@@ -12,7 +12,7 @@ export default {
   },
   detailedCoinData (name) {
     try {
-      const response = Api().get(`/coingecko/coins/${name}`)
+      const response = Api().get(`/coingecko/coin-data/${name}`)
       return response
     } catch (error) {
       console.error('Failed to get detailed coin data:', error)

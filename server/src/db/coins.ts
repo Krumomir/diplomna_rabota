@@ -67,23 +67,11 @@ const coinSchema = new mongoose.Schema({
     price_change_percentage_1y: Number,
     market_cap_change_24h: Number,
     market_cap_change_percentage_24h: Number,
-    price_change_24h_in_currency: Number,
-    price_change_percentage_1h_in_currency: Number,
-    price_change_percentage_24h_in_currency: Number,
-    price_change_percentage_7d_in_currency: Number,
-    price_change_percentage_14d_in_currency: Number,
-    price_change_percentage_30d_in_currency: Number,
-    price_change_percentage_60d_in_currency: Number,
-    price_change_percentage_200d_in_currency: Number,
-    price_change_percentage_1y_in_currency: Number,
-    market_cap_change_24h_in_currency: Number,
-    market_cap_change_percentage_24h_in_currency: Number,
     total_supply: Number,
     max_supply: Number,
     circulating_supply: Number,
     price_change_percentage_1h: Number,
   },
-
 }, { timestamps: true });
 
 export const coinModel = mongoose.model('Coin', coinSchema);

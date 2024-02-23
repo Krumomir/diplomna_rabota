@@ -72,8 +72,10 @@ export default {
       const response = await CryptoService.coinData()
       this.coins = response.data
 
-      const user = await AuthenticationService.getUser()
-      this.username = user.username
+      const user = JSON.parse(localStorage.getItem('user'))
+      if (user) {
+        this.username = user.username
+      }
     } catch (error) {
       console.error('Failed to fetch coin data:', error)
     }
@@ -81,6 +83,7 @@ export default {
   methods: {
     async signOut () {
       try {
+        localStorage.removeItem('user')
         await AuthenticationService.logout()
         this.$router.push('/auth/login')
       } catch (error) {

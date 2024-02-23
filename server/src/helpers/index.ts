@@ -11,43 +11,40 @@ export const authentication = (salt: string, password: string) => {
 export const processResponse = (response: any) => {
     // Extracting only the USD values
     const usdValues = {
-        price_change_percentage_1h: response.market_data.price_change_percentage_1h_in_currency.usd,
-        price_change_percentage_24h: response.market_data.price_change_percentage_24h_in_currency.usd,
-        price_change_percentage_7d: response.market_data.price_change_percentage_7d_in_currency.usd,
-        price_change_percentage_14d: response.market_data.price_change_percentage_14d_in_currency.usd,
-        price_change_percentage_30d: response.market_data.price_change_percentage_30d_in_currency.usd,
-        price_change_percentage_60d: response.market_data.price_change_percentage_60d_in_currency.usd,
-        price_change_percentage_200d: response.market_data.price_change_percentage_200d_in_currency.usd,
-        price_change_percentage_1y: response.market_data.price_change_percentage_1y_in_currency.usd,
-        market_cap_change_24h: response.market_data.market_cap_change_24h_in_currency.usd,
-        market_cap_change_percentage_24h: response.market_data.market_cap_change_percentage_24h_in_currency.usd,
+        market_cap_change_percentage_24h: response.market_data.market_cap_change_percentage_24h.usd,
         ath: response.market_data.ath.usd,
-        ath_change_percentage: response.market_data.ath_change_percentage.usd,
         atl: response.market_data.atl.usd,
+        ath_change_percentage: response.market_data.ath_change_percentage.usd,
         atl_change_percentage: response.market_data.atl_change_percentage.usd,
         market_cap: response.market_data.market_cap.usd,
         fully_diluted_valuation: response.market_data.fully_diluted_valuation.usd,
         total_volume: response.market_data.total_volume.usd,
         high_24h: response.market_data.high_24h.usd,
         low_24h: response.market_data.low_24h.usd,
-        current_price: response.market_data.current_price.usd,  
+        current_price: response.market_data.current_price.usd,
         ath_date: response.market_data.ath_date.usd,
         atl_date: response.market_data.atl_date.usd,
-        price_change_24h_in_currency: response.market_data.price_change_24h_in_currency.usd,
-        price_change_percentage_1h_in_currency: response.market_data.price_change_percentage_1h_in_currency.usd,
-        price_change_percentage_24h_in_currency: response.market_data.price_change_percentage_24h_in_currency.usd,
-        price_change_percentage_7d_in_currency: response.market_data.price_change_percentage_7d_in_currency.usd,
-        price_change_percentage_14d_in_currency: response.market_data.price_change_percentage_14d_in_currency.usd,
-        price_change_percentage_30d_in_currency: response.market_data.price_change_percentage_30d_in_currency.usd,
-        price_change_percentage_60d_in_currency: response.market_data.price_change_percentage_60d_in_currency.usd,
-        price_change_percentage_200d_in_currency: response.market_data.price_change_percentage_200d_in_currency.usd,
-        price_change_percentage_1y_in_currency: response.market_data.price_change_percentage_1y_in_currency.usd,
-        market_cap_change_24h_in_currency: response.market_data.market_cap_change_24h_in_currency.usd,
-        market_cap_change_percentage_24h_in_currency: response.market_data.market_cap_change_percentage_24h_in_currency.usd
     };
 
     response.platforms = Object.keys(response.platforms);
 
+    delete response.market_data.price_change_24h_in_currency;
+    delete response.market_data.price_change_percentage_1h_in_currency;
+    delete response.market_data.price_change_percentage_24h_in_currency;
+    delete response.market_data.price_change_percentage_7d_in_currency;
+    delete response.market_data.price_change_percentage_14d_in_currency;
+    delete response.market_data.price_change_percentage_30d_in_currency;
+    delete response.market_data.price_change_percentage_60d_in_currency;
+    delete response.market_data.price_change_percentage_200d_in_currency;
+    delete response.market_data.price_change_percentage_1y_in_currency;
+    delete response.market_data.market_cap_change_24h_in_currency;
+    delete response.market_data.market_cap_change_percentage_24h_in_currency;
+
+    delete response.block_time_in_minutes
+    delete response.hashing_algorithm;
+    delete response.preview_listing;
+    delete response.public_notice;
+    delete response.additional_notices;
     delete response.image;
     delete response.links.blockchain_site;
     delete response.links.official_forum_url;
@@ -70,12 +67,11 @@ export const processResponse = (response: any) => {
     return response;
 };
 
-export const filterDataByChainAndProject = (data: any, chain: string, project: string) => {
+export const filterDataByChainAndProject = (data: any, project: string) => {
     if (!Array.isArray(data)) {
         throw new TypeError('data must be an array');
     }
 
-    return data.filter((item: { chain: string; project: string; }) => item.chain === chain && item.project === project);
-  }
-  
-  
+    return data.filter((item: { project: string; }) => item.project === project);
+}
+

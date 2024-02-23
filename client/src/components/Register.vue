@@ -90,7 +90,8 @@ export default {
           email: this.email,
           password: this.password
         })
-        if (response.data && response.data.status === 200) {
+        if (response && response.status === 200) {
+          localStorage.setItem('user', JSON.stringify(response.data))
           this.$router.push('/dashboard')
         }
       } catch (error) {
