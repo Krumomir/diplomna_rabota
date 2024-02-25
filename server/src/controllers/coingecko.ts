@@ -4,7 +4,8 @@ import axios from 'axios';
 import { processResponse } from '../helpers';
 import { createCoin, getSimplifiedCoins, updateCoinById } from '../db/coins';
 import { getCoinByName } from "../db/coins";
-
+import { OpenAI } from 'openai';
+import { analyzeCoin } from "../controllers/cronjob";
 
 export const coinData = async (req: express.Request, res: express.Response) => {
   try {
@@ -22,10 +23,16 @@ export const coinData = async (req: express.Request, res: express.Response) => {
 
     const processedResponse = processResponse(data);
 
+    const recommendation = await analyzeCoin(coinId, new OpenAI(
+      {
+        apiKey: process.env.OPENAI_API_KEY,
+      }
+    )); 
+
+    processedResponse.recommendation = recommendation;
+
     const coin = await getCoinByName(processedResponse.name);
     const updatedCoin = await updateCoinById(coin._id, processedResponse);
-
-  //  const updatedCoin = await createCoin(processedResponse);
 
     res.json(updatedCoin);
   } catch (error) {

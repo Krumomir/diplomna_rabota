@@ -1,7 +1,9 @@
 import crypto from 'crypto';
-import { size } from 'lodash';
+import Stripe from 'stripe';
 
-const SECRET = 'mysecretkey';
+import { subscribeUser, unsubscribeUser } from '../db/users';
+
+const SECRET = process.env.SESSION_TOKEN_SECRET
 
 export const random = () => crypto.randomBytes(128).toString('base64');
 export const authentication = (salt: string, password: string) => {
@@ -9,61 +11,73 @@ export const authentication = (salt: string, password: string) => {
 };
 
 export const processResponse = (response: any) => {
-    // Extracting only the USD values
-    const usdValues = {
-        market_cap_change_percentage_24h: response.market_data.market_cap_change_percentage_24h.usd,
-        ath: response.market_data.ath.usd,
-        atl: response.market_data.atl.usd,
-        ath_change_percentage: response.market_data.ath_change_percentage.usd,
-        atl_change_percentage: response.market_data.atl_change_percentage.usd,
-        market_cap: response.market_data.market_cap.usd,
-        fully_diluted_valuation: response.market_data.fully_diluted_valuation.usd,
-        total_volume: response.market_data.total_volume.usd,
-        high_24h: response.market_data.high_24h.usd,
-        low_24h: response.market_data.low_24h.usd,
-        current_price: response.market_data.current_price.usd,
-        ath_date: response.market_data.ath_date.usd,
-        atl_date: response.market_data.atl_date.usd,
-    };
+    const usdKeys = [
+        'ath',
+        'atl',
+        'ath_change_percentage',
+        'atl_change_percentage',
+        'market_cap',
+        'fully_diluted_valuation',
+        'total_volume',
+        'high_24h',
+        'low_24h',
+        'current_price',
+        'ath_date',
+        'atl_date'
+    ];
+
+    const deleteKeys = [
+        'block_time_in_minutes',
+        'hashing_algorithm',
+        'preview_listing',
+        'public_notice',
+        'additional_notices',
+        'image',
+        'blockchain_site',
+        'official_forum_url',
+        'chat_url',
+        'announcement_url',
+        'categories',
+        'detail_platforms',
+        'last_updated',
+        'status_updates',
+        'id'
+    ];
+    const deleteMarketDataKeys = [
+        'price_change_24h_in_currency',
+        'price_change_percentage_1h_in_currency',
+        'price_change_percentage_24h_in_currency',
+        'price_change_percentage_7d_in_currency',
+        'price_change_percentage_14d_in_currency',
+        'price_change_percentage_30d_in_currency',
+        'price_change_percentage_60d_in_currency',
+        'price_change_percentage_200d_in_currency',
+        'price_change_percentage_1y_in_currency',
+        'market_cap_change_24h_in_currency',
+        'market_cap_change_percentage_24h_in_currency',
+    ];
+
+    deleteMarketDataKeys.forEach((key: string) => {
+        delete response.market_data[key];
+    });
+
+    const usdValues = usdKeys.reduce((acc: any, key: string) => {
+        acc[key] = response.market_data[key]?.usd;
+        return acc;
+    }, {});
+
+    deleteKeys.forEach((key: string) => {
+        const keyParts = key.split('.');
+        if (keyParts.length === 1) {
+            delete response[key];
+        } else {
+            delete response[keyParts[0]][keyParts[1]];
+        }
+    });
 
     response.platforms = Object.keys(response.platforms);
+    response.market_data = { ...response.market_data, ...usdValues };
 
-    delete response.market_data.price_change_24h_in_currency;
-    delete response.market_data.price_change_percentage_1h_in_currency;
-    delete response.market_data.price_change_percentage_24h_in_currency;
-    delete response.market_data.price_change_percentage_7d_in_currency;
-    delete response.market_data.price_change_percentage_14d_in_currency;
-    delete response.market_data.price_change_percentage_30d_in_currency;
-    delete response.market_data.price_change_percentage_60d_in_currency;
-    delete response.market_data.price_change_percentage_200d_in_currency;
-    delete response.market_data.price_change_percentage_1y_in_currency;
-    delete response.market_data.market_cap_change_24h_in_currency;
-    delete response.market_data.market_cap_change_percentage_24h_in_currency;
-
-    delete response.block_time_in_minutes
-    delete response.hashing_algorithm;
-    delete response.preview_listing;
-    delete response.public_notice;
-    delete response.additional_notices;
-    delete response.image;
-    delete response.links.blockchain_site;
-    delete response.links.official_forum_url;
-    delete response.links.chat_url;
-    delete response.links.announcement_url;
-    delete response.categories;
-    delete response.detail_platforms;
-    delete response.market_data.last_updated;
-    delete response.last_updated;
-    delete response.status_updates;
-    delete response.id;
-
-    // Update the fields within the market_data object with the extracted USD values
-    response.market_data = {
-        ...response.market_data,
-        ...usdValues
-    };
-
-    // Return the modified response
     return response;
 };
 
@@ -75,3 +89,22 @@ export const filterDataByChainAndProject = (data: any, project: string) => {
     return data.filter((item: { project: string; }) => item.project === project);
 }
 
+export const handleStripeEvent = (event: Stripe.Event) => {
+    switch (event.type) {
+        case "checkout.session.completed":
+            const checkoutSession = event.data.object;
+            const userEmail = checkoutSession.customer_details.email;
+            subscribeUser(userEmail, checkoutSession.subscription.toString());
+            break;
+        case "customer.subscription.deleted":
+            const subscription = event.data.object;
+            unsubscribeUser(subscription.id.toString());
+            break;
+        case "invoice.payment_failed":
+            const invoice = event.data.object;
+            unsubscribeUser(invoice.subscription.toString());
+            break;
+        default:
+            console.log(`Unhandled event type ${event.type}`);
+    }
+}

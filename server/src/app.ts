@@ -5,12 +5,15 @@ import compression from "compression";
 import cors from "cors";
 import router from "./router";
 import dotenv from 'dotenv';
-import { OpenAI } from 'openai';
 
-import { analyzeCoin, scheduleTask } from "./controllers/cronjob";
 import { connectDB } from "./config/db";
 import { historicalTvl, historicalYields } from "./controllers/defilama";
-import { coinData } from "./controllers/coingecko";
+import { coinData, getAllCoins } from "./controllers/coingecko";
+import { scheduleTask } from "./controllers/cronjob";
+
+import { OpenAI } from 'openai';
+import { analyzeCoin } from "./controllers/cronjob";
+import { get } from "lodash";
 
 dotenv.config();
 
@@ -37,13 +40,7 @@ app.use(cookieparser());
 
 app.use('/', router());
 
-analyzeCoin('Lido DAO', new OpenAI(
-  {
-    apiKey: process.env.OPENAI_API_KEY,
-
-  }));
-
-const protocols = ['Lido', 'aave', 'Compound-v2'];
+const protocols = ['lido', 'aave', 'Compound-v2'];
 protocols.forEach(protocol => scheduleTask(protocol, historicalTvl));
 
 const protocols1 = ['aave-v2', 'lido', 'compound-v2'];

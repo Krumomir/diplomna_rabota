@@ -72,15 +72,30 @@ const coinSchema = new mongoose.Schema({
     circulating_supply: Number,
     price_change_percentage_1h: Number,
   },
+  recommendation: {
+    type: String,
+    default: '',
+    select: false
+  }
 }, { timestamps: true });
 
 export const coinModel = mongoose.model('Coin', coinSchema);
 
-export const getCoinById = (id: String) => coinModel.findById(id);
-export const getCoinByName = (name: String) => 
-  coinModel.findOne({ name }).then((coin: any) => coin ? coin.toObject() : null);
+const nameMap: Record<string, string> = {
+  'lido': 'Lido DAO',
+  'compound': 'c0x',
+  'aave': 'Aave',
+  'lido-dao': 'Lido DAO',
+  'compound-0x': 'c0x',
+};
+
+export const getCoinById = (id: string) => coinModel.findById(id);
+export const getCoinByName = (name: string) => {
+  const coinName = nameMap[name] || name;
+  return coinModel.findOne({ name: coinName });
+}
 export const getSimplifiedCoins = () => coinModel.find({}, { name: 1, symbol: 1, "market_data.current_price": 1 });
-export const getCoins = () => coinModel.find({});
+export const getCoins = () => coinModel.find({}).then((coins: any) => coins.map((coin: any) => coin.toObject()));
 export const createCoin = (data: any): Promise<any> => coinModel.create(data).then((coin: any) => coin.toObject());
 export const deleteCoinById = (id: String) => coinModel.findByIdAndDelete(id);
-export const updateCoinById = (id: String, values: Record<string, any>) => coinModel.findByIdAndUpdate(id, values).then((coin: any) => coin.toObject());
+export const updateCoinById = (id: String, values: Record<string, any>) => coinModel.findByIdAndUpdate(id, values).select('+recommendation').then((coin: any) => coin.toObject());
