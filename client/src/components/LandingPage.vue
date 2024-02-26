@@ -58,7 +58,12 @@
                 <h2 class="text-3xl font-bold mb-4">Ready to get started?</h2>
                 <p class="max-w-[600px] text-lg mb-8">
                     Join us today and start your journey in crypto investing.
-                </p><a
+                </p> <a v-if="user"
+                    class="inline-flex h-10 items-center justify-center rounded-md bg-gray-900 px-8 text-sm font-medium text-gray-50 shadow transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50"
+                    href="http://localhost:8080/dashboard">
+                    Explore
+                    </a>
+                    <a v-else
                     class="inline-flex h-10 items-center justify-center rounded-md bg-gray-900 px-8 text-sm font-medium text-gray-50 shadow transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50"
                     href="http://localhost:8080/auth/login">
                     Sign In
@@ -71,7 +76,9 @@
 <script>
 export default {
   data () {
-    return {}
+    return {
+      user: JSON.parse(localStorage.getItem('user'))
+    }
   }
 }
 </script>

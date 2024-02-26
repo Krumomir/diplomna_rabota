@@ -43,3 +43,16 @@ export const updateUser = async (req: express.Request, res: express.Response) =>
         return res.status(400).json({ error: error.message });
     }
 }
+
+export const getUser = async (req: express.Request, res: express.Response) => {
+    try {
+        let { id } = req.params;
+
+        id = id.replace(/"/g, '');
+
+        const user = await getUserById(id);
+        return res.json(user);
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
+    }
+}

@@ -35,7 +35,7 @@
     <div class="space-y-2">
       <h2 class="text-2xl font-bold tracking-tighter sm:text-3xl md:text-4xl">Links</h2>
       <div class="space-y-2">
-        <ul class="grid grid-cols-1 gap-2 md:grid-cols-2">
+        <ul class="grid grid-cols-1 gap-2 md:grid-cols-2" v-if="coin && coin.links">
           <li>
             <strong>Homepage</strong>: {{ coin.links.homepage[0] ? coin.links.homepage[0] : 'N/A' }}
           </li>
@@ -65,7 +65,7 @@
     <div class="space-y-2">
       <h2 class="text-2xl font-bold tracking-tighter sm:text-3xl md:text-4xl">Repositories</h2>
       <div class="space-y-2">
-        <ul class="grid grid-cols-1 gap-2 md:grid-cols-2">
+        <ul class="grid grid-cols-1 gap-2 md:grid-cols-2"  v-if="coin && coin.links">
           <li>
             <strong>GitHub</strong>: {{ coin.links.repos_url.github[0] ? coin.links.repos_url.github[0] : 'N/A' }}
           </li>
@@ -79,7 +79,7 @@
     <div class="space-y-2">
       <h2 class="text-2xl font-bold tracking-tighter sm:text-3xl md:text-4xl">Other Information</h2>
       <div class="space-y-2">
-        <ul class="grid grid-cols-1 gap-2 md:grid-cols-2">
+        <ul class="grid grid-cols-1 gap-2 md:grid-cols-2" v-if="coin && coin.country_origin">
           <li>
             <strong>Country of Origin</strong>: {{ coin.country_origin ? coin.country_origin : 'N/A' }}
           </li>
@@ -110,17 +110,12 @@
     <div class="space-y-2">
       <h2 class="text-2xl font-bold tracking-tighter sm:text-3xl md:text-4xl">Market Data</h2>
       <div class="space-y-2">
-        <ul class="grid grid-cols-1 gap-2 md:grid-cols-2">
+        <ul class="grid grid-cols-1 gap-2 md:grid-cols-2" v-if="coin && coin.market_data">
           <li>
             <strong>Current Price</strong>: {{ coin.market_data.current_price ? coin.market_data.current_price : 'N/A' }}
           </li>
           <li>
-            <strong>Total Value Locked (BTC)</strong>: {{ coin.market_data.total_value_locked.btc ?
-              coin.market_data.total_value_locked.btc : 'N/A' }}
-          </li>
-          <li>
-            <strong>Total Value Locked (USD)</strong>: {{ coin.market_data.total_value_locked.usd ?
-              coin.market_data.total_value_locked.usd : 'N/A' }}
+            <strong>Total Value Locked (USD)</strong>: {{ ( coin.market_data.total_value_locked && coin.market_data.total_value_locked.usd) || 'N/A' }}
           </li>
           <li>
             <strong>Market Cap to TVL Ratio</strong>: {{ coin.market_data.mcap_to_tvl_ratio ?

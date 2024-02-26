@@ -1,7 +1,10 @@
 import crypto from 'crypto';
 import Stripe from 'stripe';
+import dotenv from 'dotenv';
 
 import { subscribeUser, unsubscribeUser } from '../db/users';
+
+dotenv.config();
 
 const SECRET = process.env.SESSION_TOKEN_SECRET
 

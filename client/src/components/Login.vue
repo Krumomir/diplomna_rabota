@@ -86,8 +86,7 @@ export default {
           password: this.password
         })
         if (response && response.status === 200) {
-          console.log('response:', response.data)
-          localStorage.setItem('user', JSON.stringify(response.data))
+          localStorage.setItem('userId', response.data._id)
           this.$router.push(`/dashboard`)
         }
       } catch (error) {

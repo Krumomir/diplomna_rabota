@@ -1,7 +1,7 @@
 import express from 'express';
 import Stripe from 'stripe';
 
-import { getUserBySessionToken } from '../db/users';
+import { getUserById } from '../db/users';
 import { handleStripeEvent } from '../helpers';
 
 export const webhook = (req: express.Request, res: express.Response) => {
@@ -34,12 +34,18 @@ export const webhook = (req: express.Request, res: express.Response) => {
 export const cancelSubscription = async (req: express.Request, res: express.Response) => {
     try {
         const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-        const sessionToken = req.cookies.sessionToken;
-        const user = await getUserBySessionToken(sessionToken).select("+subscription.sub_id");
+        const userId = req.params.id;
+        let user = await getUserById(userId).select("+subscription.sub_id");
+
+        if (!user.subscription.sub_id) {
+            return res.status(400).json({ message: 'User does not have a subscription' });
+        }
 
         const subscription = await stripe.subscriptions.cancel(user.subscription.sub_id);
 
-        res.json(subscription);
+        user = await getUserById(userId);
+
+        res.json(user);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
