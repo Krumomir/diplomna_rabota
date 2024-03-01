@@ -74,10 +74,24 @@
 </template>
 
 <script>
+import AuthenticationService from '@/services/AuthenticationService.js'
+
 export default {
   data () {
     return {
-      user: JSON.parse(localStorage.getItem('user'))
+      user: null,
+      error: null
+    }
+  },
+  async created () {
+    const userId = localStorage.getItem('userId')
+    if (userId) {
+      try {
+        this.response = await AuthenticationService.getUser(userId)
+        this.user = this.response.data
+      } catch (error) {
+        this.error = error.response.data.message
+      }
     }
   }
 }

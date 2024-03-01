@@ -4,6 +4,7 @@ import axios from 'axios';
 import { processResponse } from '../helpers';
 import { createCoin, getSimplifiedCoins, updateCoinById } from '../db/coins';
 import { getCoinByName } from "../db/coins";
+import { getUserById } from "../db/users";
 import { OpenAI } from 'openai';
 import { analyzeCoin } from "../controllers/cronjob";
 
@@ -23,13 +24,13 @@ export const coinData = async (req: express.Request, res: express.Response) => {
 
     const processedResponse = processResponse(data);
 
-    const recommendation = await analyzeCoin(coinId, new OpenAI(
-      {
-        apiKey: process.env.OPENAI_API_KEY,
-      }
-    )); 
+    // const recommendation = await analyzeCoin(coinId, new OpenAI(
+    //   {
+    //     apiKey: process.env.OPENAI_API_KEY,
+    //   }
+    // )); 
 
-    processedResponse.recommendation = recommendation;
+    // processedResponse.recommendation = recommendation;
 
     const coin = await getCoinByName(processedResponse.name);
     const updatedCoin = await updateCoinById(coin._id, processedResponse);
@@ -40,10 +41,28 @@ export const coinData = async (req: express.Request, res: express.Response) => {
   }
 };
 
-export const getCoinInfoByName = async (req: express.Request, res: express.Response) => {
+export const getCoinInfoByName = async (req: any, res: express.Response) => {
   try {
     const coinName = req.params.name;
-    const response = await getCoinByName(coinName);
+    const userId = req.identity._id;
+    
+    if (!coinName) {
+      return res.status(400).json({ message: 'Empty coin name' });
+    }
+
+    if (!userId) {
+      return res.status(400).json({ message: 'Empty user id' });
+    }
+
+    const user = await getUserById(userId);
+
+    let response;
+    if (user.subscription.subscribed === false) {
+      response = await getCoinByName(coinName);
+    } else {
+      response = await getCoinByName(coinName).select('+recommendation');
+    }
+
     res.json(response);
   } catch (error) {
     res.status(500).json({ error: error.message });

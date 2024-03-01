@@ -48,8 +48,6 @@ export const getUser = async (req: express.Request, res: express.Response) => {
     try {
         let { id } = req.params;
 
-        id = id.replace(/"/g, '');
-
         const user = await getUserById(id);
         return res.json(user);
     } catch (error) {

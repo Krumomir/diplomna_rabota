@@ -219,6 +219,16 @@
         </ul>
       </div>
     </div>
+    <div className="space-y-2">
+        <h2 className="text-2xl font-bold tracking-tighter sm:text-3xl md:text-4xl"></h2>
+        <div className="space-y-2">
+          <ul className="grid grid-cols-1 gap-2 md:grid-cols-2">
+            <li>
+              <strong>AI Recommendation</strong>: {{ coin.recommendation ? coin.recommendation : 'Subscribe for AI data analises' }}
+            </li>
+          </ul>
+        </div>
+      </div>
   </div>
 </template>
 
@@ -236,7 +246,7 @@ export default {
       const response = await CryptoService.detailedCoinData(this.$route.params.name)
       this.coin = response.data
     } catch (error) {
-      console.error('Failed to fetch coin data:', error)
+      this.$router.push('/auth/login')
     }
   }
 }

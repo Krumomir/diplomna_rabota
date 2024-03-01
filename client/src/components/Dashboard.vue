@@ -18,7 +18,8 @@
               class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
               Sign Out
             </button>
-            <stripe-buy-button v-if="!user.subscription.subscribed" buy-button-id="buy_btn_1OhSnaFGqGGHwrYIe8gQovPm"
+            <stripe-buy-button v-if="!user.subscription.subscribed"
+              buy-button-id="buy_btn_1OhSnaFGqGGHwrYIe8gQovPm"
               publishable-key="pk_test_51OazktFGqGGHwrYINdK1byvCH1BSFHmwjeudGEG1j4dITPruv70Ouwk94AR5ao8dbapmPp2hXLjrVcQh8hYWHBsl00tZT8yjSL">
             </stripe-buy-button>
             <button @click="unsubscribe"
@@ -64,7 +65,8 @@ export default {
     return {
       coins: [],
       selectedCoin: null,
-      user: null
+      user: null,
+      error: null
     }
   },
   async created () {
@@ -73,23 +75,24 @@ export default {
       this.response = await AuthenticationService.getUser(userId)
       this.user = this.response.data
     } catch (error) {
-      console.error('Failed to fetch user:', error)
+      this.$router.push('/auth/login')
     }
     try {
       const response = await CryptoService.coinData()
       this.coins = response.data
     } catch (error) {
-      console.error('Failed to fetch coin data:', error)
+      this.error = 'Failed to fetch coin data.'
     }
   },
   methods: {
     async signOut () {
       try {
         localStorage.removeItem('user')
+        localStorage.removeItem('userId')
         await AuthenticationService.logout()
         this.$router.push('/auth/login')
       } catch (error) {
-        console.error('Failed to sign out:', error)
+        this.error = 'Failed to sign out.'
       }
     },
     async unsubscribe () {
@@ -97,15 +100,9 @@ export default {
         const response = await StripeService.cancelSubscription(this.user._id)
         if (response && response.status === 200) {
           this.$router.push('/dashboard')
-        } else {
-          console.log('response:', response.message)
         }
       } catch (error) {
-        if (error.response) {
-          this.error = error.response.data.message
-        } else {
-          this.error = 'An error occurred while trying to unsubscribe.'
-        }
+        this.error = 'An error occurred while trying to unsubscribe.'
       }
     },
     goToCoinDetails (coin) {

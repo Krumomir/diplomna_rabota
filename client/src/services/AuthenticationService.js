@@ -2,39 +2,19 @@ import Api from './Api'
 
 export default {
   register (credentials) {
-    try {
-      const response = Api().post('auth/register', credentials)
-      return response
-    } catch (error) {
-      console.error('Failed to register:', error)
-      throw error
-    }
+    const response = Api().post('auth/register', credentials)
+    return response
   },
   login (credentials) {
-    try {
-      const response = Api().post('auth/login', credentials)
-      return response
-    } catch (error) {
-      console.error('Failed to login:', error)
-      throw error
-    }
+    const response = Api().post('auth/login', credentials)
+    return response
   },
-  logout (credentials) {
-    try {
-      const response = Api().post('/logout', credentials)
-      return response
-    } catch (error) {
-      console.error('Failed to logout:', error)
-      throw error
-    }
+  logout () {
+    const response = Api().post('/logout')
+    return response
   },
-  getUser (id, credentials) {
-    try {
-      const response = Api().get(`/user/${id}`, credentials)
-      return response
-    } catch (error) {
-      console.error('Failed to get user:', error)
-      throw error
-    }
+  getUser (id) {
+    const response = Api().get(`/user/${id}`)
+    return response
   }
 }

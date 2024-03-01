@@ -1,7 +1,6 @@
+import { getUserBySessionToken } from "../db/users";
 import express from "express";
 import { get, merge } from "lodash";
-
-import { getUserBySessionToken } from "../db/users";
 
 export const isAuthenticated = async (req: express.Request, res: express.Response,  next: express.NextFunction) => {
     try {
@@ -21,8 +20,7 @@ export const isAuthenticated = async (req: express.Request, res: express.Respons
 
         return next();
     } catch (error) {
-        console.error(error);
-        return res.sendStatus(400);
+        return res.status(400).json({ message: error });
     }
 };
 
@@ -30,7 +28,7 @@ export const isOwner = async (req: express.Request, res: express.Response,  next
     try {
         let { id } = req.params;
         const currentUserId = get(req, 'identity._id') as string;
-    
+
         if (!currentUserId) {
           return res.sendStatus(400);
         }
@@ -41,7 +39,6 @@ export const isOwner = async (req: express.Request, res: express.Response,  next
     
         next();
       } catch (error) {
-        console.log(error);
-        return res.sendStatus(400);
+        return res.status(400).json({ message: error });
       }
 }

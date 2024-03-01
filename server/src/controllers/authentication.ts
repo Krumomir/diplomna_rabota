@@ -1,4 +1,5 @@
 import express from 'express';
+import bcrypt from 'bcrypt';
 
 import { getUserByEmail, createUser, getUserBySessionToken } from '../db/users';
 import { authentication, random } from '../helpers';
@@ -12,14 +13,15 @@ export const login = async (req: express.Request, res: express.Response) => {
       return res.status(400). json({ message: 'Empty email or password' });
     }
 
-    const user = await getUserByEmail(email).select('+authentication.salt +authentication.password');
+    const user = await getUserByEmail(email).select('+authentication.password');
 
     if (!user) {
       return res.status(400).json({ message: 'User not found' });
     }
-    const expectedHash = authentication(user.authentication.salt, password);
 
-    if (user.authentication.password != expectedHash) {
+    const isPasswordCorrect = await bcrypt.compare(password, user.authentication.password);
+
+    if (!isPasswordCorrect) {
       return res.status(403).json({ message: 'Invalid password' });
     }
 
@@ -64,16 +66,17 @@ export const register = async (req: express.Request, res: express.Response) => {
       return res.status(400).json({ message: 'Invalid password: The password requires at least 8 characters and at least one uppercase letter' });
     }
 
-    const salt = random();
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const user = await createUser({
       email,
       username,
       authentication: {
-        salt,
-        password: authentication(salt, password),
+        password: hashedPassword,
       },
     });
 
+    const salt = random();
     user.authentication.sessionToken = authentication(salt, user._id.toString());
     await user.save();
 
