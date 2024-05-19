@@ -40,8 +40,7 @@ To run the server-side part of the project, you need to have the following progr
 2. Install the necessary libraries:
    ```sh
    npm install
-3. Start the client:
-   3.1 Build the client:
+3. Start and build the client:
    ```sh
    npm run build
    npm run dev
