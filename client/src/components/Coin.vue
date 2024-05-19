@@ -1,6 +1,5 @@
 <template>
-
-  <div class="max-w-screen-xl mx-auto">
+  <div class="max-w-screen-xl mx-auto" v-if="coin">
     <div class="flex flex-col">
       <div class="flex flex-row">
         <div class="bg-white p-6 rounded-lg shadow-md w-full md:w-1/3 ">
@@ -15,7 +14,7 @@
                 ▼ {{ coin.market_data.price_change_percentage_24h }}%
               </span>
             </div>
-            <div class="flex items-center space-x-2 mt-2">
+            <div class="flex items-center space-x-2 mt-2" v-if="coin">
               <span class="text-gray-500">Last 24 hours</span>
               <span class="text-gray-500">Trading volume: ${{ formatNumber(coin.market_data.total_volume) }}</span>
             </div>
@@ -31,9 +30,9 @@
             </div>
 
             <div class="flex justify-between text-sm font-medium text-gray-500 mt-2">
-              <p>${{ coin.market_data.low_24h }}</p>
+              <p>${{ formatNumber(coin.market_data.low_24h) }}</p>
               <p>24h Range</p>
-              <p>${{ coin.market_data.high_24h }}</p>
+              <p>${{ formatNumber(coin.market_data.high_24h) }}</p>
             </div>
           </div>
 
@@ -233,9 +232,10 @@ export default {
       historyTvl: null
     }
   },
-  methods: 
-    {formatNumber(number) {
-      return number.toLocaleString();
+  methods:
+  {
+    formatNumber(number) {
+      return number.toLocaleString()
     },
     formatDate(dateString) {
       const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -275,7 +275,15 @@ export default {
             },
             y: {
               beginAtZero: true
-            }
+            },
+            yAxes: [{
+              ticks: {
+                // Include a dollar sign in the ticks
+                callback: function (value, index, values) {
+                  return '$' + value.toLocaleString();
+                }
+              }
+            }]
           }
         }
       });
