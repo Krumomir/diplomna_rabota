@@ -33,9 +33,3 @@ To run the server-side part of the project, you need to have the following progr
 
 You are now successfully running the server at localhost:8081.
 
-
-## How to Use
-Instructions on how to set up, install, and use the project will go here.
-
-## Contributing
-Instructions on how to contribute to the project will go here.
