@@ -53,7 +53,7 @@
               Total Supply
               <span>{{ formatNumber(coin.market_data.total_supply) }}</span>
             </p>
-            <p class="flex items-center justify-between text-gray-900">
+            <p class="flex items-center justify-between text-gray-900" v-if="coin.market_data.max_supply">
               Max Supply
               <span>{{ formatNumber(coin.market_data.max_supply) }}</span>
             </p>
@@ -215,6 +215,12 @@
         <p class="text-xl text-black-500">Subscribe for advanced analysis</p>
       </div>
     </div>
+    <div v-if="error" class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+      <div class="bg-white p-4 rounded shadow-lg">
+        <h2 class="text-xl font-bold mb-2">Error</h2>
+        <p class="mb-4">{{ error }}</p>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -222,10 +228,8 @@
 import CryptoService from '@/services/CryptoService.js'
 import Chart from 'chart.js'
 
-
-
 export default {
-  data() {
+  data () {
     return {
       coin: null,
       error: null,
@@ -234,23 +238,24 @@ export default {
   },
   methods:
   {
-    formatNumber(number) {
+    formatNumber (number) {
       return number.toLocaleString()
     },
-    formatDate(dateString) {
-      const options = { year: 'numeric', month: 'long', day: 'numeric' };
-      return new Date(dateString).toLocaleDateString(undefined, options);
+    formatDate (dateString) {
+      const options = { year: 'numeric', month: 'long', day: 'numeric' }
+      return new Date(dateString).toLocaleDateString(undefined, options)
     },
-    copyAddress() {
+    copyAddress () {
       navigator.clipboard.writeText(this.coin.contract_address)
         .then(() => {
-          alert('Address copied to clipboard');
+          alert('Address copied to clipboard')
         })
         .catch(err => {
-          console.error('Could not copy text: ', err);
-        });
-    }, createChart() {
-      const ctx = document.getElementById('tvlChart').getContext('2d');
+          console.error('Could not copy text: ', err)
+        })
+    },
+    createChart () {
+      const ctx = document.getElementById('tvlChart').getContext('2d')
 
       new Chart(ctx, {
         type: 'line',
@@ -279,17 +284,17 @@ export default {
             yAxes: [{
               ticks: {
                 // Include a dollar sign in the ticks
-                callback: function (value, index, values) {
-                  return '$' + value.toLocaleString();
+                callback: function (value) {
+                  return '$' + value.toLocaleString()
                 }
               }
             }]
           }
         }
-      });
-    },
+      })
+    }
   },
-  async created() {
+  async created () {
     try {
       const response = await CryptoService.detailedCoinData(this.$route.params.name)
       this.coin = response.data

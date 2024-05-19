@@ -12,5 +12,5 @@ export default {
   coinHistory (name) {
     const response = Api().get(`/defilama/historical-tvl/${name}`)
     return response
-  },
+  }
 }

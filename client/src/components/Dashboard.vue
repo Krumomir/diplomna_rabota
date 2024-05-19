@@ -18,8 +18,7 @@
               class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
               Sign Out
             </button>
-            <stripe-buy-button v-if="!user.subscription.subscribed"
-              buy-button-id="buy_btn_1OhSnaFGqGGHwrYIe8gQovPm"
+            <stripe-buy-button v-if="!user.subscription.subscribed" buy-button-id="buy_btn_1OhSnaFGqGGHwrYIe8gQovPm"
               publishable-key="pk_test_51OazktFGqGGHwrYINdK1byvCH1BSFHmwjeudGEG1j4dITPruv70Ouwk94AR5ao8dbapmPp2hXLjrVcQh8hYWHBsl00tZT8yjSL">
             </stripe-buy-button>
             <button @click="unsubscribe"
@@ -50,6 +49,12 @@
             </div>
           </div>
         </main>
+      </div>
+    </div>
+    <div v-if="error" class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+      <div class="bg-white p-4 rounded shadow-lg">
+        <h2 class="text-xl font-bold mb-2">Error</h2>
+        <p class="mb-4">{{ error }}</p>
       </div>
     </div>
   </div>
