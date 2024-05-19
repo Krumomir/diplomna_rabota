@@ -31,7 +31,7 @@ To run the server-side part of the project, you need to have the following progr
    ```sh
    npm run start
  
- You are now successfully running the server at localhost:8080.
+ You are now successfully running the server at localhost:8081.
 
 ### Client Configuration and Execution
 1. Navigate to the client directory:
@@ -45,6 +45,6 @@ To run the server-side part of the project, you need to have the following progr
    npm run build
    npm run dev
 
- You are now successfully running the client at localhost:8081.
+ You are now successfully running the client at localhost:8080.
 
 
