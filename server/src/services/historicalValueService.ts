@@ -5,6 +5,9 @@ const nameMap: Record<string, string> = {
     'compound': 'Compound-v2',
     'lido-dao': 'lido',
     'compound-0x': 'Compound-v2',
+    "Lido DAO": "lido",
+    "c0x": "Compound-v2",
+    "Aave": "aave"
   };
   
   export const getProtocols = () => ProtocolHistoricalTVLModel.find({});

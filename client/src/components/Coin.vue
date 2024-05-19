@@ -7,7 +7,7 @@
           <div class="mt-4">
             <h1 class="text-3xl font-semibold pb-2">{{ coin.name }}</h1>
             <div class="flex items-baseline space-x-2">
-              <h2 class="text-5xl font-extrabold text-gray-900">${{ coin.market_data.current_price }}</h2>
+              <h2 class="text-5xl font-extrabold text-gray-900">${{ formatNumber(coin.market_data.current_price) }}</h2>
               <span class="text-green-500" v-if="coin.market_data.price_change_percentage_24h > 0">
                 ▲ {{ coin.market_data.price_change_percentage_24h }}%
               </span>
@@ -17,7 +17,7 @@
             </div>
             <div class="flex items-center space-x-2 mt-2">
               <span class="text-gray-500">Last 24 hours</span>
-              <span class="text-gray-500">Trading volume: ${{ coin.market_data.total_volume }}</span>
+              <span class="text-gray-500">Trading volume: ${{ formatNumber(coin.market_data.total_volume) }}</span>
             </div>
             <div class="mt-2 flex items-center space-x-1">
               <p class="text-sm text-gray-500">1.0000 {{ coin.symbol }}</p>
@@ -40,23 +40,23 @@
           <div class="mt-4 space-y-2">
             <p class="flex items-center justify-between text-gray-900">
               Market Cap
-              <span>${{ coin.market_data.market_cap }}</span>
+              <span>${{ formatNumber(coin.market_data.market_cap) }}</span>
             </p>
             <p class="flex items-center justify-between text-gray-900">
               Fully Diluted Valuation
-              <span>${{ coin.market_data.fully_diluted_valuation }}</span>
+              <span>${{ formatNumber(coin.market_data.fully_diluted_valuation) }}</span>
             </p>
             <p class="flex items-center justify-between text-gray-900">
               Circulating Supply
-              <span>{{ coin.market_data.circulating_supply }}</span>
+              <span>{{ formatNumber(coin.market_data.circulating_supply) }}</span>
             </p>
             <p class="flex items-center justify-between text-gray-900">
               Total Supply
-              <span>{{ coin.market_data.total_supply }}</span>
+              <span>{{ formatNumber(coin.market_data.total_supply) }}</span>
             </p>
             <p class="flex items-center justify-between text-gray-900">
               Max Supply
-              <span>{{ coin.market_data.max_supply }}</span>
+              <span>{{ formatNumber(coin.market_data.max_supply) }}</span>
             </p>
           </div>
         </div>
@@ -167,7 +167,7 @@
             <div class="flex justify-between items-center">
               <span class="font-medium">All-Time High</span>
               <div>
-                <span class="text-red-600">${{ coin.market_data.ath }}</span>
+                <span class="text-red-600">${{ formatNumber(coin.market_data.ath) }}</span>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                   class="text-red-600 inline ml-1">
@@ -181,7 +181,7 @@
             <div class="flex justify-between items-center">
               <span class="font-medium">All-Time Low</span>
               <div>
-                <span class="text-green-600">${{ coin.market_data.atl }}</span>
+                <span class="text-green-600">${{ formatNumber(coin.market_data.atl) }}</span>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                   class="text-green-600 inline ml-1">
@@ -233,7 +233,10 @@ export default {
       historyTvl: null
     }
   },
-  methods: {
+  methods: 
+    {formatNumber(number) {
+      return number.toLocaleString();
+    },
     formatDate(dateString) {
       const options = { year: 'numeric', month: 'long', day: 'numeric' };
       return new Date(dateString).toLocaleDateString(undefined, options);

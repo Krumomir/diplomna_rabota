@@ -46,6 +46,6 @@ export const cancelSubscription = async (req: express.Request, res: express.Resp
 
         res.json(user);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ error: "An error occurred while trying to unsubscribe." });
     }
 }

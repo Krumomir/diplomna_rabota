@@ -24,15 +24,15 @@ export const coinData = async (req: express.Request, res: express.Response) => {
 
     const processedResponse = processResponse(data);
 
-    // const recommendation = await analyzeCoin(coinId, new OpenAI(
-    //   {
-    //     apiKey: process.env.OPENAI_API_KEY,
-    //   }
-    // )); 
+    const recommendation = await analyzeCoin(coinId, new OpenAI(
+      {
+        apiKey: process.env.OPENAI_API_KEY,
+      }
+    )); 
 
-    // processedResponse.recommendation = recommendation;
+    processedResponse.recommendation = recommendation;
 
-    // console.log(recommendation);
+    console.log(recommendation);
 
     const coin = await getCoinByName(processedResponse.name);
     const updatedCoin = await updateCoinById(coin._id, processedResponse);

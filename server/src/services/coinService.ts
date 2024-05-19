@@ -16,4 +16,4 @@ export const getSimplifiedCoins = () => coinModel.find({}, { name: 1, symbol: 1,
 export const getCoins = () => coinModel.find({}).then((coins: any) => coins.map((coin: any) => coin.toObject()));
 export const createCoin = (data: any): Promise<any> => coinModel.create(data).then((coin: any) => coin.toObject());
 export const deleteCoinById = (id: String) => coinModel.findByIdAndDelete(id);
-export const updateCoinById = (id: String, values: Record<string, any>) => coinModel.findByIdAndUpdate(id, values).select('+recommendation').then((coin: any) => coin.toObject());
+export const updateCoinById = (id: String, values: Record<string, any>) => coinModel.findByIdAndUpdate(id, values, { new: true }).select('+recommendation').then((coin: any) => coin.toObject());
