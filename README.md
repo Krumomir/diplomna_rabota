@@ -20,7 +20,7 @@ To run the server-side part of the project, you need to have the following progr
    ```sh
    git clone https://github.com/Krumomir/diplomna_rabota
 
-### Server Configuration and Execution
+#### Server Configuration and Execution
 1. Navigate to the server directory:
    ```sh
    cd server
@@ -33,7 +33,7 @@ To run the server-side part of the project, you need to have the following progr
  
  You are now successfully running the server at localhost:8081.
 
-### Client Configuration and Execution
+#### Client Configuration and Execution
 1. Navigate to the client directory:
    ```sh
    cd client
