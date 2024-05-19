@@ -81,7 +81,7 @@ export default {
       const response = await CryptoService.coinData()
       this.coins = response.data
     } catch (error) {
-      this.error = 'Failed to fetch coin data.'
+      this.error = error.response.data.message
     }
   },
   methods: {
@@ -102,7 +102,7 @@ export default {
           this.$router.push('/dashboard')
         }
       } catch (error) {
-        this.error = 'An error occurred while trying to unsubscribe.'
+        this.error = error.response.data.message
       }
     },
     goToCoinDetails (coin) {
