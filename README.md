@@ -14,16 +14,25 @@ To run the server-side part of the project, you need to have the following progr
 - MongoDB
 - Git
 
-### 4.2.1 Application Installation
+### Application Installation
 1. Create a new directory on your computer.
 2. Open a terminal in the created directory and run the following command:
    ```sh
    git clone https://github.com/Krumomir/diplomna_rabota
 
-### 4.2.2 Server Configuration and Execution
+### Server Configuration and Execution
 1. Navigate to the server directory:
    ```sh
    cd server
+2. Install the necessary libraries:
+   ```sh
+   npm install
+3.Start the server:
+   ```sh
+   npm run server
+
+You are now successfully running the server at localhost:8081.
+
 
 ## How to Use
 Instructions on how to set up, install, and use the project will go here.
