@@ -1,10 +1,8 @@
 import express from 'express';
 import axios from 'axios';
 
-import { updateProtocolById, getProtocolByName } from "../db/protocolHistoricalTVL";
-import { updatePoolById, getPoolByPool } from "../db/pool";
-import { createProtocol } from '../db/protocolHistoricalTVL';
-import { createPool } from '../db/pool';
+import { updateProtocolById, getProtocolByName } from '../services/historicalValueService';
+import { updatePoolById, getPoolByPool, getPoolsByProject, createPool } from '../services/poolService';
 
 import { filterDataByChainAndProject } from "../helpers";
 
@@ -32,11 +30,9 @@ export const historicalTvl = async (req: express.Request, res: express.Response)
     const protocol = await getProtocolByName(protocolName);
     const updatedProtocol = await updateProtocolById(protocol._id, totalTvl );
 
-   // const updatedProtocol = await createProtocol(protocolName, totalTvl);
-
     res.json(updatedProtocol);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -51,13 +47,42 @@ export const historicalYields = async (req: express.Request, res: express.Respon
     const savedData = [];
     for (const item of filteredData) {
         const pool = await getPoolByPool(item.pool);
-        const savedItem = await updatePoolById(pool._id, item);
-      // const savedItem = await createPool(item);
+        let savedItem;
+        if (!pool) {
+          savedItem = await createPool(item);
+        }
+        else
+          savedItem = await updatePoolById(pool._id, item);
+
       savedData.push(savedItem);
     }
 
     res.json(savedData);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
+
+export const getHistoricalTvl = async (req: express.Request, res: express.Response) => {
+  try {
+    const protocolName = req.params.protocol;
+
+    const protocol = await getProtocolByName(protocolName);
+
+    res.json(protocol);
+  } catch (error) {
+    res.status(500).json({ message: "There was an error fetching data from the database" });
+  }
+}
+
+export const getHistoricalYields = async (req: express.Request, res: express.Response) => {
+  try {
+    const protocolName = req.params.protocol;
+
+    const pools = await getPoolsByProject(protocolName);
+
+    res.json(pools);
+  } catch (error) {
+    res.status(500).json({ message: "There was an error fetching data from the database" });
+  }
+}

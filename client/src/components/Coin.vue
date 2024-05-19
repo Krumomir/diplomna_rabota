@@ -222,7 +222,7 @@
     <div className="space-y-2">
         <h2 className="text-2xl font-bold tracking-tighter sm:text-3xl md:text-4xl"></h2>
         <div className="space-y-2">
-          <ul className="grid grid-cols-1 gap-2 md:grid-cols-2">
+          <ul className="grid grid-cols-1 gap-2 md:grid-cols-2"  v-if="coin && coin.recommendation">
             <li>
               <strong>AI Recommendation</strong>: {{ coin.recommendation ? coin.recommendation : 'Subscribe for AI data analises' }}
             </li>
@@ -238,7 +238,8 @@ import CryptoService from '@/services/CryptoService.js'
 export default {
   data () {
     return {
-      coin: null
+      coin: null,
+      error: null
     }
   },
   async created () {
@@ -246,7 +247,11 @@ export default {
       const response = await CryptoService.detailedCoinData(this.$route.params.name)
       this.coin = response.data
     } catch (error) {
-      this.$router.push('/auth/login')
+      if (error.response.status === 403) {
+        this.$router.push('/auth/login')
+      } else {
+        this.error = error.response.data.message
+      }
     }
   }
 }

@@ -7,6 +7,7 @@ server/.env
 server/*.tsbuildinfo
 server/*.js
 server/*.js.map
+server/dist/
 
 client/.DS_Store
 client/node_modules/

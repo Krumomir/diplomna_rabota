@@ -1,7 +1,7 @@
 import express from 'express';
 import bcrypt from 'bcrypt';
 
-import { getUserByEmail, createUser, getUserBySessionToken } from '../db/users';
+import { getUserByEmail, createUser, getUserBySessionToken } from "../services/userService";
 import { authentication, random } from '../helpers';
 
 export const login = async (req: express.Request, res: express.Response) => {
@@ -34,7 +34,7 @@ export const login = async (req: express.Request, res: express.Response) => {
 
     return res.status(200).json(user).end();
   } catch (error) {
-    return res.status(400).json({ message: error });
+    return res.status(400).json({ message: error.message });
   }
 };
 
@@ -84,7 +84,7 @@ export const register = async (req: express.Request, res: express.Response) => {
 
     return res.status(200).json(user).end();
   } catch (error) {
-    return res.status(400).json({ message: error });
+    return res.status(400).json({ message: error.message });
   }
 }
 
@@ -102,6 +102,6 @@ export const logout = async (req: express.Request, res: express.Response) => {
 
     res.sendStatus(200);
   } catch (error) {
-    return res.status(400).json({ message: error });
+    return res.status(400).json({ message: error.message });
   }
 };

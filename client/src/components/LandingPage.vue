@@ -90,7 +90,7 @@ export default {
         this.response = await AuthenticationService.getUser(userId)
         this.user = this.response.data
       } catch (error) {
-        this.error = error.response.data.message
+        this.user = null
       }
     }
   }

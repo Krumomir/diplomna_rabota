@@ -1,7 +1,7 @@
 import express from 'express';
 import Stripe from 'stripe';
 
-import { getUserById } from '../db/users';
+import { getUserById } from "../services/userService";
 import { handleStripeEvent } from '../helpers';
 
 export const webhook = (req: express.Request, res: express.Response) => {
@@ -21,11 +21,10 @@ export const webhook = (req: express.Request, res: express.Response) => {
             webhookKey
         );
 
-    } catch (err) {
-        res.status(400).send(`Webhook Error: ${err.message}`);
+    } catch (error) {
+        res.status(400).send({message: 'Webhook Error: ' + error.message});
     }
- //  todo https://stripe.com/docs/billing/subscriptions/cancel?dashboard-or-api=api#handle-invoice-items-when-canceling-subscriptions
-    
+  
     handleStripeEvent(event);
 
     res.json({ received: true });
