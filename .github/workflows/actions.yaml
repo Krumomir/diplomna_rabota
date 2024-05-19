@@ -22,3 +22,4 @@ jobs:
 
     - name: Run project
       run: npm run dev
+      working-directory: ./client
