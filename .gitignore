@@ -1,7 +1,24 @@
 # Node.js
-node_modules/
+server/node_modules/
+
+server/.env
 
 # TypeScript
-*.tsbuildinfo
-*.js
-*.js.map
+server/*.tsbuildinfo
+server/*.js
+server/*.js.map
+
+client/.DS_Store
+client/node_modules/
+client/dist/
+client/npm-debug.log*
+client/yarn-debug.log*
+client/yarn-error.log*
+
+# Editor directories and files
+client/.idea
+client/.vscode
+client/*.suo
+client/*.ntvs*
+client/*.njsproj
+client/*.sln
